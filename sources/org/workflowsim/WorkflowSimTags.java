@@ -51,13 +51,15 @@ public class WorkflowSimTags {
      * Judge which mode dose the VM or the core go-in
      */
     public static final int VM_STATUS_NAP = BASE + 7;
-    public static final int HOST_STATUS_SLEEP = BASE + 8;
-    public static final int HOST_STATUS_DEEPERSLEEP = BASE + 9;
+    public static final int HOST_STATUS_WORK = BASE + 8;
+    public static final int HOST_STATUS_SLEEP = BASE + 9;
+    public static final int HOST_STATUS_DEEPERSLEEP = BASE + 10;
     
     /**
      * EnergySavingMonitor Events
      */
-    public static final int MONITOR_BEGIN = BASE + 10;
+    public static final int MONITOR_ON = BASE + 11;
+    public static final int HOST_SLEEP_TIMEING = BASE + 12;
     
     
     /**
