@@ -36,6 +36,7 @@ public class WorkflowSimTags {
      * VM Status is busy (no jobs should run on this vm)
      */
     public static final int VM_STATUS_BUSY = BASE + 3;
+    
     /**
      * VM Status is idle (a job can run on this vm)
      */
@@ -44,7 +45,21 @@ public class WorkflowSimTags {
     public static final int JOB_SUBMIT = BASE + 1;
     public static final int CLOUDLET_UPDATE = BASE + 5;
     public static final int CLOUDLET_CHECK = BASE + 6;
-
+    
+    
+    /**
+     * Judge which mode dose the VM or the core go-in
+     */
+    public static final int VM_STATUS_NAP = BASE + 7;
+    public static final int HOST_STATUS_SLEEP = BASE + 8;
+    public static final int HOST_STATUS_DEEPERSLEEP = BASE + 9;
+    
+    /**
+     * EnergySavingMonitor Events
+     */
+    public static final int MONITOR_BEGIN = BASE + 10;
+    
+    
     /**
      * Private Constructor
      */
