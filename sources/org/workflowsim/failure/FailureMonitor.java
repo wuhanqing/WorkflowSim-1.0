@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.cloudbus.cloudsim.Log;
-import org.workflowsim.utils.Parameters;
 
 /**
  * FailureMonitor collects failure information
@@ -203,7 +202,7 @@ public class FailureMonitor {
         if (sumFailures == 0) {
             return 0;
         }
-        double alpha = (double) ((double) sumFailures / (double) sumJobs);
+        double alpha = (double) sumFailures / (double) sumJobs;
         return alpha;
 
     }

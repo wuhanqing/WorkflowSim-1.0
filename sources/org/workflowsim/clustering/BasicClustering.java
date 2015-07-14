@@ -302,7 +302,7 @@ public class BasicClustering implements ClusteringInterface {
     public void clean() {
         if (root != null) {
             for (int i = 0; i < root.getChildList().size(); i++) {
-                Task node = (Task) root.getChildList().get(i);
+                Task node = root.getChildList().get(i);
                 node.getParentList().remove(root);
                 root.getChildList().remove(node);
                 i--;

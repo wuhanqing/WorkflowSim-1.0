@@ -85,7 +85,7 @@ public class DynamicWorkloadExample1 extends WorkflowSimBasicExample1{
             /**
              * Should change this based on real physical path
              */
-            String daxPath = "/Users/chenweiwei/Work/WorkflowSim-1.0/config/dax/Montage_100.xml";
+            String daxPath = "/Users/wuhanqing/Dropbox/Java/WorkflowSim-1.0-master/config/dax/Montage_100.xml";
             if(daxPath == null){
                 Log.printLine("Warning: Please replace daxPath with the physical path in your working environment!");
                 return;
@@ -100,8 +100,8 @@ public class DynamicWorkloadExample1 extends WorkflowSimBasicExample1{
              * Since we are using HEFT planning algorithm, the scheduling algorithm should be static 
              * such that the scheduler would not override the result of the planner
              */
-            Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.STATIC;
-            Parameters.PlanningAlgorithm pln_method = Parameters.PlanningAlgorithm.HEFT;
+            Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.MINMIN;
+            Parameters.PlanningAlgorithm pln_method = Parameters.PlanningAlgorithm.INVALID;
             ReplicaCatalog.FileSystem file_system = ReplicaCatalog.FileSystem.LOCAL;
 
             /**

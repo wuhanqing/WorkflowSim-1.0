@@ -93,6 +93,13 @@ public class VmAllocationPolicySimple extends VmAllocationPolicy {
 					getUsedPes().put(vm.getUid(), requiredPes);
 					getFreePes().set(idx, getFreePes().get(idx) - requiredPes);
 					result = true;
+					for(int i = 0; i < host.getPeList().size(); i++)
+					{
+						if(host.getPeList().get(i).getStatus() == Pe.FREE)
+						{
+							 
+						}
+					}
 					break;
 				} else {
 					freePesTmp.set(idx, Integer.MIN_VALUE);

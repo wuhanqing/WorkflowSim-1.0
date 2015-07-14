@@ -29,7 +29,6 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
-import org.workflowsim.failure.FailureParameters;
 import org.workflowsim.utils.Parameters;
 import org.workflowsim.utils.ReplicaCatalog;
 
@@ -70,7 +69,7 @@ public class WorkflowParser {
      */
     @SuppressWarnings("unchecked")
     public List<Task> getTaskList() {
-        return (List<Task>) taskList;
+        return taskList;
     }
 
     /**
@@ -217,7 +216,7 @@ public class WorkflowParser {
                      */
                     double runtime = 0.0;
                     if (this.mName2Runtime.containsKey(nodeName)) {
-                        runtime = 1000 * (Double) this.mName2Runtime.get(nodeName);
+                        runtime = 1000 * this.mName2Runtime.get(nodeName);
                         length = (long) runtime;
                     } else if (node.getAttributeValue("runtime") != null) {
                         String nodeTime = node.getAttributeValue("runtime");
@@ -250,7 +249,7 @@ public class WorkflowParser {
                             String inout = file.getAttributeValue("link");
                             double size = 0.0;
                             if (this.mName2Size.containsKey(fileName)) {
-                                size = (Double) this.mName2Size.get(fileName) /*/ 1024*/;//now it is KB
+                                size = this.mName2Size.get(fileName) /*/ 1024*/;//now it is KB
                             } else {
                                 String fileSize = file.getAttributeValue("size");
                                 if (fileSize != null) {
@@ -335,13 +334,13 @@ public class WorkflowParser {
                     String childName = node.getAttributeValue("ref");
                     if (mName2Task.containsKey(childName)) {
 
-                        Task childTask = (Task) mName2Task.get(childName);
+                        Task childTask = mName2Task.get(childName);
 
                         for (Iterator itc = pList.iterator(); itc.hasNext();) {
                             Element parent = (Element) itc.next();
                             String parentName = parent.getAttributeValue("ref");
                             if (mName2Task.containsKey(parentName)) {
-                                Task parentTask = (Task) mName2Task.get(parentName);
+                                Task parentTask = mName2Task.get(parentName);
                                 parentTask.addChild(childTask);
                                 childTask.addParent(parentTask);
                             }
@@ -390,4 +389,132 @@ public class WorkflowParser {
 
         }
     }
+    
+    
+    /**
+     * Parse a DAX file with jdom
+     */
+    public void parseXmlFile(String daxPath) {
+
+        try {
+
+            SAXBuilder builder = new SAXBuilder();
+            //parse using builder to get DOM representation of the XML file
+            Document dom = builder.build(new File(daxPath));
+            Element root = dom.getRootElement();
+            List list = root.getChildren();
+            int idIndex = 1;
+            for (Iterator it = list.iterator(); it.hasNext();) {
+                Element node = (Element) it.next();
+                if (node.getName().toLowerCase().equals("job")) {
+
+                    long length = 0;
+                    String nodeName = node.getAttributeValue("id");
+                    String nodeType = node.getAttributeValue("name");
+
+                    /**
+                     * capture runtime. If not exist, by default the runtime is
+                     * 0
+                     */
+                    double runtime = 0.0;
+                    if (this.mName2Runtime.containsKey(nodeName)) {
+                        runtime = 1000 * this.mName2Runtime.get(nodeName);
+                        length = (long) runtime;
+                    } else if (node.getAttributeValue("runtime") != null) {
+                        String nodeTime = node.getAttributeValue("runtime");
+                        runtime = 1000 * Double.parseDouble(nodeTime);
+                        length = (long) runtime;
+                    } else {
+                        Log.printLine("Cannot find runtime for " + nodeName + ",set it to be 0");
+                    }
+                    //multiple the scale, by default it is 1.0
+                    length *= Parameters.getRuntimeScale();
+                    
+                    List fileList = node.getChildren();
+
+                    List mFileList = new ArrayList<org.cloudbus.cloudsim.File>();
+
+
+
+                    Task task = new Task(idIndex, length);
+
+                    task.setType(nodeType);
+
+                    task.setUserId(userId);
+                    idIndex++;
+                    mName2Task.put(nodeName, task);
+
+
+                    for (Iterator itm = mFileList.iterator(); itm.hasNext();) {
+                        org.cloudbus.cloudsim.File file = (org.cloudbus.cloudsim.File) itm.next();
+                        task.addRequiredFile(file.getName());
+                    }
+
+                    task.setFileList(mFileList);
+                    this.getTaskList().add(task);
+
+                    /**
+                     * Add dependencies info.
+                     */
+                } else if (node.getName().toLowerCase().equals("child")) {
+                    List pList = node.getChildren();
+                    String childName = node.getAttributeValue("ref");
+                    if (mName2Task.containsKey(childName)) {
+
+                        Task childTask = mName2Task.get(childName);
+
+                        for (Iterator itc = pList.iterator(); itc.hasNext();) {
+                            Element parent = (Element) itc.next();
+                            String parentName = parent.getAttributeValue("ref");
+                            if (mName2Task.containsKey(parentName)) {
+                                Task parentTask = mName2Task.get(parentName);
+                                parentTask.addChild(childTask);
+                                childTask.addParent(parentTask);
+                            }
+
+                        }
+                    }
+                }
+
+            }
+            /**
+             * If a task has no parent, then it is root task.
+             */
+            ArrayList roots = new ArrayList<Task>();
+            for (Iterator it = mName2Task.values().iterator(); it.hasNext();) {
+                Task task = (Task) it.next();
+                task.setDepth(0);
+                if (task.getParentList().isEmpty()) {
+                    roots.add(task);
+                }
+            }
+
+            /**
+             * Add depth from top to bottom.
+             */
+            for (Iterator it = roots.iterator(); it.hasNext();) {
+                Task task = (Task) it.next();
+                setDepth(task, 1);
+            }
+            /**
+             * Clean them so as to save memory. Parsing workflow may take much memory
+             */
+            this.mName2Runtime.clear();
+            this.mName2Size.clear();
+            this.mName2Task.clear();//?
+
+        } catch (JDOMException jde) {
+            Log.printLine("JDOM Exception;Please make sure your dax file is valid");
+
+        } catch (IOException ioe) {
+            Log.printLine("IO Exception;Please make sure dax.path is correctly set in your config file");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.printLine("Parsing Exception");
+
+        }
+        
+    }
+    
 }

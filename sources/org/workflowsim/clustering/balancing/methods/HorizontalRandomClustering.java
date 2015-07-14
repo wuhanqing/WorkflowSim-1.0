@@ -19,7 +19,6 @@ package org.workflowsim.clustering.balancing.methods;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
@@ -66,7 +65,7 @@ public class HorizontalRandomClustering extends BalancingMethod {
                 int index = 0;
                 for (TaskSet set : taskList) {
                     //MinHeap is required 
-                    TaskSet job = (TaskSet) jobList.get(index);
+                    TaskSet job = jobList.get(index);
                     index ++ ;
                     if(index == getClusterNum()){
                         index = 0;

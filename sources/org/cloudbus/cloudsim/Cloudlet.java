@@ -24,6 +24,8 @@ import org.cloudbus.cloudsim.core.CloudSim;
  * @since CloudSim Toolkit 1.0
  */
 public class Cloudlet {
+	
+	private int check = -1;
 
 	/**
 	 * The User or Broker ID. It is advisable that broker set this ID with its own ID, so that
@@ -1462,5 +1464,14 @@ public class Cloudlet {
 	public double getUtilizationOfBw(final double time) {
 		return getUtilizationModelBw().getUtilization(time);
 	}
+
+	public int getCheck() {
+		return check;
+	}
+
+	public void setCheck(int check) {
+		this.check = check;
+	}
+	
 
 }

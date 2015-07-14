@@ -91,7 +91,7 @@ public class MaxMinSchedulingAlgorithm extends BaseSchedulingAlgorithm {
             CondorVM firstIdleVm = null;//(CondorVM)getVmList().get(0);
             for (int j = 0; j < vmSize; j++) {
                 CondorVM vm = (CondorVM) getVmList().get(j);
-                if (vm.getState() == WorkflowSimTags.VM_STATUS_IDLE) {
+                if (vm.getState() == WorkflowSimTags.VM_STATUS_IDLE || vm.getState() == WorkflowSimTags.VM_STATUS_NAP) {
                     firstIdleVm = vm;
                     break;
                 }
@@ -101,7 +101,7 @@ public class MaxMinSchedulingAlgorithm extends BaseSchedulingAlgorithm {
             }
             for (int j = 0; j < vmSize; j++) {
                 CondorVM vm = (CondorVM) getVmList().get(j);
-                if ((vm.getState() == WorkflowSimTags.VM_STATUS_IDLE)
+                if ((vm.getState() == WorkflowSimTags.VM_STATUS_IDLE || vm.getState() == WorkflowSimTags.VM_STATUS_NAP)
                         && vm.getCurrentRequestedTotalMips() > firstIdleVm.getCurrentRequestedTotalMips()) {
                     firstIdleVm = vm;
 

@@ -171,7 +171,7 @@ public class PeProvisionerSimple extends PeProvisioner {
 	 * 
 	 * @return the peTable
 	 */
-	protected Map<String, List<Double>> getPeTable() {
+	public Map<String, List<Double>> getPeTable() {
 		return peTable;
 	}
 

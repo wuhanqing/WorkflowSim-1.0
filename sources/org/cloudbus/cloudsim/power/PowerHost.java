@@ -73,7 +73,7 @@ public class PowerHost extends HostDynamicWorkload {
 	 * @param utilization the utilization
 	 * @return the power
 	 */
-	protected double getPower(double utilization) {
+	public double getPower(double utilization) {
 		double power = 0;
 		try {
 			power = getPowerModel().getPower(utilization);
@@ -122,7 +122,7 @@ public class PowerHost extends HostDynamicWorkload {
 	 * 
 	 * @param powerModel the new power model
 	 */
-	protected void setPowerModel(PowerModel powerModel) {
+	public void setPowerModel(PowerModel powerModel) {
 		this.powerModel = powerModel;
 	}
 

@@ -70,9 +70,9 @@ public class ChildAwareHorizontalClustering extends BalancingMethod {
 
                     int i = depth + 1;
                     while (map.containsKey(i)) {
-                        ArrayList<TaskSet> tsList = (ArrayList) map.get(i);
+                        ArrayList<TaskSet> tsList = map.get(i);
                         CHBcheckLevel(tsList);
-                        AbstractArrayList tsAbList = (AbstractArrayList) tmpMap.get(tsList);
+                        AbstractArrayList tsAbList = tmpMap.get(tsList);
                         tsAbList.hasChecked = true;
                         i++;
                     }
@@ -89,9 +89,10 @@ public class ChildAwareHorizontalClustering extends BalancingMethod {
      */
     private void sortMap(ArrayList<AbstractArrayList> list) {
         Collections.sort(list, new Comparator<AbstractArrayList>() {
-            public int compare(AbstractArrayList l1, AbstractArrayList l2) {
+            @Override
+			public int compare(AbstractArrayList l1, AbstractArrayList l2) {
 
-                return (int) (l2.getArrayList().size() - l1.getArrayList().size());
+                return l2.getArrayList().size() - l1.getArrayList().size();
             }
         });
 

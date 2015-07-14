@@ -42,7 +42,7 @@ public class PipelineRuntimeVariance implements BalancingMetric {
         double[] rv = new double[list.size()];
 
         for (int i = 0; i < list.size(); i++) {
-            TaskSet set = (TaskSet) list.get(i);
+            TaskSet set = list.get(i);
             rv[i] = getPipelineSum(set);
             //Log.printLine(rv[i]);
         }

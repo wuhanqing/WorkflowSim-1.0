@@ -134,7 +134,8 @@ public class HorizontalImpactBalancing extends BalancingMethod {
      */
     private void sortListIncreasing(ArrayList taskList) {
         Collections.sort(taskList, new Comparator<TaskSet>() {
-            public int compare(TaskSet t1, TaskSet t2) {
+            @Override
+			public int compare(TaskSet t1, TaskSet t2) {
                 //Decreasing order
                 return (int) (t1.getJobRuntime() - t2.getJobRuntime());
 

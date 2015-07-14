@@ -59,7 +59,7 @@ public class BalancedClusteringExample1 extends HorizontalClusteringExample1 {
             * 
             */
            String code = "i";
-           String daxPath = "/Users/chenweiwei/Work/WorkflowSim-1.0/config/dax/Montage_100.xml";
+           String daxPath = "D:/Dropbox/Java/WorkflowSim-1.0-master/config/dax/Montage_100.xml";
            double c_delay = 0.0, q_delay = 0.0, e_delay = 0.0, p_delay = 0.0;
            int interval = 0;
            

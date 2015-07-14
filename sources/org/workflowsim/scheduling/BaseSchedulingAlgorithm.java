@@ -93,7 +93,8 @@ public abstract class BaseSchedulingAlgorithm implements SchedulingAlgorithmInte
     /**
      * The main function
      */
-    public abstract void run() throws Exception;
+    @Override
+	public abstract void run() throws Exception;
 
     /**
      * Gets the scheduled job list

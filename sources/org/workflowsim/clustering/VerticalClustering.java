@@ -180,7 +180,7 @@ public class VerticalClustering extends BasicClustering {
 
                 for (int j = 0; j < node.getParentList().size(); j++) {
 
-                    Task parent = (Task) node.getParentList().get(j);
+                    Task parent = node.getParentList().get(j);
                     if (parent.getType().equals("mProjectPP")) {
                         j--;
                         node.getParentList().remove(parent);
@@ -191,7 +191,7 @@ public class VerticalClustering extends BasicClustering {
             } else if (name.equals("mAdd")) {
                 for (int j = 0; j < node.getParentList().size(); j++) {
 
-                    Task parent = (Task) node.getParentList().get(j);
+                    Task parent = node.getParentList().get(j);
                     String pName = parent.getType();
                     if (pName.equals("mBackground") || pName.equals("mShrink")) {
                         j--;

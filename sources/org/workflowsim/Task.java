@@ -35,6 +35,8 @@ import org.cloudbus.cloudsim.UtilizationModelFull;
  */
 public class Task extends Cloudlet {
 
+//	private int check = -1;
+	
     /*
      * The list of parent tasks. 
      */
@@ -342,4 +344,13 @@ public class Task extends Cloudlet {
         cost += costPerBw * fileSize;
         return cost;
     }
+
+//	public int getCheck() {
+//		return check;
+//	}
+//
+//	public void setCheck(int check) {
+//		this.check = check;
+//	}
+    
 }

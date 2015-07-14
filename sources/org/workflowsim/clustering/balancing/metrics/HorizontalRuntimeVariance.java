@@ -46,8 +46,8 @@ public class HorizontalRuntimeVariance implements BalancingMetric {
         sum = 0;
         for (TaskSet task : list) {
             long var = task.getJobRuntime();
-            sum += Math.pow((double) (var - mean), 2);
+            sum += Math.pow(var - mean, 2);
         }
-        return Math.sqrt((double) (sum / list.size())) / mean;
+        return Math.sqrt(sum / list.size()) / mean;
     }
 }

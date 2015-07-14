@@ -35,5 +35,9 @@ public interface PowerModel {
 	 * @throws IllegalArgumentException the illegal argument exception
 	 */
 	double getPower(double utilization) throws IllegalArgumentException;
+	
+	double getPerformancePerPower(double utilization) throws IllegalArgumentException;
+	
+	double getAveragePPP() throws IllegalAccessException;
 
 }

@@ -9,7 +9,6 @@
 package org.cloudbus.cloudsim.provisioners;
 
 import java.util.List;
-
 import org.cloudbus.cloudsim.Vm;
 
 /**

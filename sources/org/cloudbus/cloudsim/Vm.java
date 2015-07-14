@@ -21,6 +21,12 @@ import java.util.List;
  * @since CloudSim Toolkit 1.0
  */
 public class Vm {
+	
+	private double napTimeWithoutHostSleep = 0;
+	
+	private double lastMonitorTime = 0;
+	
+	private List<Cloudlet> scheduledCloudlets;
 
 	/** The id. */
 	private int id;
@@ -577,6 +583,30 @@ public class Vm {
 	public List<VmStateHistoryEntry> getStateHistory() {
 		return stateHistory;
 	}
+	
+	
+
+	public double getNapTimeWithoutHostSleep()
+	{
+		return napTimeWithoutHostSleep;
+	}
+
+	public void setNapTimeWithoutHostSleep(double napTimeWithoutHostSleep)
+	{
+		this.napTimeWithoutHostSleep = napTimeWithoutHostSleep;
+	}
+	
+	
+
+	public double getLastMonitorTime()
+	{
+		return lastMonitorTime;
+	}
+
+	public void setLastMonitorTime(double vmlastMonitorTime)
+	{
+		this.lastMonitorTime = lastMonitorTime;
+	}
 
 	/**
 	 * Adds the state history entry.
@@ -606,4 +636,13 @@ public class Vm {
 		getStateHistory().add(newState);
 	}
 
+	public List<Cloudlet> getScheduledCloudlets() {
+		return scheduledCloudlets;
+	}
+
+	public void setScheduledCloudlets(List<Cloudlet> scheduledCloudlets) {
+		this.scheduledCloudlets = scheduledCloudlets;
+	}
+
+	
 }

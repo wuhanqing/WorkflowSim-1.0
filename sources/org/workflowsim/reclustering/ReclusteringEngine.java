@@ -341,7 +341,7 @@ public class ReclusteringEngine {
         List newTaskList = new ArrayList();
         long length = 0;
         for (int i = 0; i < size; i++) {
-            Task task = (Task) job.getTaskList().get(i);
+            Task task = job.getTaskList().get(i);
             if (task.getCloudletStatus() == Cloudlet.FAILED) {
                 newTaskList.add(task);
                 length += task.getCloudletLength();

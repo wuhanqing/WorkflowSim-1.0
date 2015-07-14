@@ -56,7 +56,7 @@ public class RoundRobinSchedulingAlgorithm extends BaseSchedulingAlgorithm {
             if (firstIdleVm == null) {
                 break;
             }
-            ((CondorVM) firstIdleVm).setState(WorkflowSimTags.VM_STATUS_BUSY);
+            firstIdleVm.setState(WorkflowSimTags.VM_STATUS_BUSY);
             cloudlet.setVmId(firstIdleVm.getId());
             getScheduledList().add(cloudlet);
             vmIndex = (vmIndex + 1) % vmList.size();

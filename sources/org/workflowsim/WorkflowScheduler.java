@@ -18,9 +18,11 @@ package org.workflowsim;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.DatacenterBroker;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
+import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
@@ -30,6 +32,9 @@ import org.workflowsim.failure.FailureGenerator;
 import org.workflowsim.scheduling.DataAwareSchedulingAlgorithm;
 import org.workflowsim.scheduling.BaseSchedulingAlgorithm;
 import org.workflowsim.scheduling.FCFSSchedulingAlgorithm;
+import org.workflowsim.scheduling.HMPCSchedulingAlgorithm;
+import org.workflowsim.scheduling.HMPCnewBest最新;
+import org.workflowsim.scheduling.HMPCtest;
 import org.workflowsim.scheduling.MCTSchedulingAlgorithm;
 import org.workflowsim.scheduling.MaxMinSchedulingAlgorithm;
 import org.workflowsim.scheduling.MinMinSchedulingAlgorithm;
@@ -167,6 +172,15 @@ public class WorkflowScheduler extends DatacenterBroker {
             case ROUNDROBIN:
                 algorithm = new RoundRobinSchedulingAlgorithm();
                 break;
+            case HMPC:
+                algorithm = new HMPCSchedulingAlgorithm();
+                break;
+            case HMPCtest:
+                algorithm = new HMPCtest();
+                break;
+            case HMPCnew:
+                algorithm = new HMPCnewBest最新();
+                break;
             default:
                 algorithm = new StaticSchedulingAlgorithm();
                 break;
@@ -254,6 +268,16 @@ public class WorkflowScheduler extends DatacenterBroker {
             e.printStackTrace();
         }
 
+        List<CondorVM> vmList = getVmList();
+        for (int i = 0; i < vmList.size(); i++) {
+			vmList.get(i).setnTime(0);
+		}
+        
+        List<Host> hostList = vmList.get(0).getHost().getDatacenter().getHostList();
+        for (int i = 0; i < hostList.size(); i++) {
+			hostList.get(i).setAlgorithmW(0);
+		}
+        
         List scheduledList = scheduler.getScheduledList();
         for (Iterator it = scheduledList.iterator(); it.hasNext();) {
             Cloudlet cloudlet = (Cloudlet) it.next();
@@ -262,6 +286,7 @@ public class WorkflowScheduler extends DatacenterBroker {
             if(Parameters.getOverheadParams().getQueueDelay()!=null){
                 delay = Parameters.getOverheadParams().getQueueDelay(cloudlet);
             }
+            //schedule����ӦvmId������������ȥ����CLOUDLET_SUBMIT�¼�
             schedule(getVmsToDatacentersMap().get(vmId), delay, CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
 
         }
@@ -295,7 +320,7 @@ public class WorkflowScheduler extends DatacenterBroker {
         CondorVM vm = (CondorVM) getVmsCreatedList().get(cloudlet.getVmId());
         //so that this resource is released
         vm.setState(WorkflowSimTags.VM_STATUS_IDLE);
-
+        
         double delay = 0.0;
         if(Parameters.getOverheadParams().getPostDelay()!=null){
             delay = Parameters.getOverheadParams().getPostDelay(job);

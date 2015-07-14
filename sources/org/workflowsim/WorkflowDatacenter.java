@@ -54,6 +54,17 @@ public class WorkflowDatacenter extends Datacenter {
         super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
 
     }
+    
+    public WorkflowDatacenter(HostConsumptionMonitor hostConsumptionMonitor ,String name,
+            DatacenterCharacteristics characteristics,
+            VmAllocationPolicy vmAllocationPolicy,
+            List<Storage> storageList,
+            double schedulingInterval) throws Exception {
+    	
+        super(hostConsumptionMonitor ,name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
+
+    }
+    
 
     @Override
     protected void processOtherEvent(SimEvent ev) {
@@ -111,6 +122,7 @@ public class WorkflowDatacenter extends Datacenter {
             int vmId = cl.getVmId();
             Host host = getVmAllocationPolicy().getHost(vmId, userId);
             CondorVM vm = (CondorVM)host.getVm(vmId, userId);
+            
 
             switch (Parameters.getCostModel()) {
                 case DATACENTER:
@@ -124,9 +136,6 @@ public class WorkflowDatacenter extends Datacenter {
                 default:
                     break;
             }
-
-
-
 
             /**
              * Stage-in file && Shared based on the file.system
@@ -146,6 +155,7 @@ public class WorkflowDatacenter extends Datacenter {
             double fileTransferTime = 0.0;
             if (cl.getClassType() == ClassType.COMPUTE.value) {
                 fileTransferTime = processDataStageIn(job.getFileList(), cl);
+//            	fileTransferTime = processDataStageIn(job.getFileList(), cl, job.getParentList());
             }
 
 
@@ -272,6 +282,24 @@ public class WorkflowDatacenter extends Datacenter {
         }
         return false;
     }
+    
+    public static boolean isRealInputF(List<File> list, File file) {
+        if (file.getType() == FileType.INPUT.value)//input file
+        {
+            for (File another : list) {
+                if (another.getName().equals(file.getName())
+                        /**
+                         * if another file is output file
+                         */
+                        && another.getType() == FileType.OUTPUT.value) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+    
     /*
      * Stage in for a single job (both stage-in job and compute job)
      * @param requiredFiles, all files to be stage-in
@@ -347,8 +375,9 @@ public class WorkflowDatacenter extends Datacenter {
                                 maxBwth = bwth;
                             }
                         }
+                        //修改了，加上了(double)强制类型转换！
                         if (requiredFileStagein && maxBwth > 0.0) {
-                            time += file.getSize() / Consts.MILLION * 8 / maxBwth;
+                            time += (double) file.getSize() / Consts.MILLION * 8 / maxBwth;
                         }
 
                         /**
@@ -366,6 +395,203 @@ public class WorkflowDatacenter extends Datacenter {
         return time;
     }
 
+    
+    
+    protected double processDataStageIn(List<File> requiredFiles, Cloudlet cl, List parentList) throws Exception {
+        double time = 0.0;
+        Iterator<File> iter = requiredFiles.iterator();
+        while (iter.hasNext()) {
+            File file = iter.next();
+            //The input file is not an output File 
+            if (isRealInputFile(requiredFiles, file)) {
+                double maxBwth = 0.0;
+                List siteList = ReplicaCatalog.getStorageList(file.getName());
+                if (siteList.isEmpty()) {
+                    throw new Exception(file.getName() + " does not exist");
+                }
+                switch (ReplicaCatalog.getFileSystem()) {
+                    case SHARED:
+                        //stage-in job
+                        /**
+                         * Picks up the site that is closest
+                         */
+                        if (cl.getClassType() == ClassType.STAGE_IN.value) {
+                            double maxRate = Double.MIN_VALUE;
+                            for (Storage storage : getStorageList()) {
+                                double rate = storage.getMaxTransferRate();
+                                if (rate > maxRate) {
+                                    rate = maxRate;
+                                }
+                            }
+                            //Storage storage = getStorageList().get(0);
+                            time += file.getSize() / maxRate;
+                        }
+                        break;
+                    case LOCAL:
+
+                        int vmId = cl.getVmId();
+                        int userId = cl.getUserId();
+                        Host host = getVmAllocationPolicy().getHost(vmId, userId);
+                        Vm vm = host.getVm(vmId, userId);
+
+                        boolean requiredFileStagein = true;
+
+                        for (Iterator it = siteList.iterator(); it.hasNext();) {
+                            //site is where one replica of this data is located at
+                            String site = (String) it.next();
+                            if (site.equals(this.getName())) {
+                                continue;
+                            }
+                            /**
+                             * This file is already in the local vm and thus it
+                             * is no need to transfer
+                             */
+                            if (site.equals(Integer.toString(vmId))) {
+                                requiredFileStagein = false;
+                                break;
+                            }
+                            double bwth = 0;
+                            if (site.equals(Parameters.SOURCE)) {
+                                //transfers from the source to the VM is limited to the VM bw only
+                                bwth = vm.getBw();
+                                //bwth = dcStorage.getBaseBandwidth();
+                            } else {
+                            	for (int i = 0; i < parentList.size(); i++) {
+									Job job = (Job) parentList.get(i);
+									if (site.equals(String.valueOf(job.getVmId()))) {
+										bwth = Math.min(vm.getBw(), getVmAllocationPolicy().getHost(Integer.parseInt(site), userId).getVm(job.getVmId(), userId).getBw());
+										break;
+									} else {
+										bwth = 0;
+									}
+								}
+                            }
+                            if (bwth > maxBwth) {
+                                maxBwth = bwth;
+                            }
+                        }
+                        //修改了，加上了(double)强制类型转换！
+                        if (requiredFileStagein && maxBwth > 0.0) {
+                            time += (double) file.getSize() / Consts.MILLION * 8 / maxBwth;
+                        }
+
+                        /**
+                         * For the case when storage is too small it is not
+                         * handled here
+                         */
+                        //We should add but since CondorVm has a small capability it often fails
+                        //We currently don't use this storage to do anything meaningful. It is left for future. 
+                        //condorVm.addLocalFile(file);
+                        ReplicaCatalog.addStorageList(file.getName(), Integer.toString(vmId));
+                        break;
+                }
+            }
+        }
+        return time;
+    }
+    
+    
+    
+    /**
+     * 任务cl在vm上运行时，所需的传输时间。
+     * 
+     * @param requiredFiles
+     * @param cl
+     * @param vm
+     * @return 传输时间
+     * @throws Exception
+     */
+    public double processDataStageIn(List<File> requiredFiles, Cloudlet cl, CondorVM vm) throws Exception {
+        double time = 0.0;
+        Iterator<File> iter = requiredFiles.iterator();
+        while (iter.hasNext()) {
+            File file = iter.next();
+            //The input file is not an output File 
+            if (isRealInputFile(requiredFiles, file)) {
+            	
+                double maxBwth = 0.0;
+                List siteList = ReplicaCatalog.getStorageList(file.getName());
+                if (siteList.isEmpty()) {
+                    throw new Exception(file.getName() + " does not exist");
+                }
+                switch (ReplicaCatalog.getFileSystem()) {
+                    case SHARED:
+                        //stage-in job
+                        /**
+                         * Picks up the site that is closest
+                         */
+                        if (cl.getClassType() == ClassType.STAGE_IN.value) {
+                            double maxRate = Double.MIN_VALUE;
+                            for (Storage storage : getStorageList()) {
+                                double rate = storage.getMaxTransferRate();
+                                if (rate > maxRate) {
+                                    rate = maxRate;
+                                }
+                            }
+                            //Storage storage = getStorageList().get(0);
+                            time += file.getSize() / maxRate;
+                        }
+                        break;
+                    case LOCAL:
+
+                    	if (vm.getFileList().contains(file.getName())) {
+        					continue;
+        				}
+                    	
+                        int vmId = vm.getId();
+                        int userId = vm.getUserId();
+
+                        boolean requiredFileStagein = true;
+
+                        for (Iterator it = siteList.iterator(); it.hasNext();) {
+                            //site is where one replica of this data is located at
+                            String site = (String) it.next();
+                            if (site.equals(this.getName())) {
+                                continue;
+                            }
+                            /**
+                             * This file is already in the local vm and thus it
+                             * is no need to transfer
+                             */
+                            if (site.equals(Integer.toString(vmId))) {
+                                requiredFileStagein = false;
+                                break;
+                            }
+                            double bwth;
+                            if (site.equals(Parameters.SOURCE)) {
+                                //transfers from the source to the VM is limited to the VM bw only
+                                bwth = vm.getBw();
+                                //bwth = dcStorage.getBaseBandwidth();
+                            } else {
+                                //transfers between two VMs is limited to both VMs
+                                bwth = Math.min(vm.getBw(), getVmAllocationPolicy().getHost(Integer.parseInt(site), userId).getVm(Integer.parseInt(site), userId).getBw());
+                                //bwth = dcStorage.getBandwidth(Integer.parseInt(site), vmId);
+                            }
+                            if (bwth > maxBwth) {
+                                maxBwth = bwth;
+                            }
+                        }
+                        //修改了，加上了(double)强制类型转换！
+                        if (requiredFileStagein && maxBwth > 0.0) {
+                            time +=(double) file.getSize() / Consts.MILLION * 8 / maxBwth;
+                        }
+
+                        /**
+                         * For the case when storage is too small it is not
+                         * handled here
+                         */
+                        //We should add but since CondorVm has a small capability it often fails
+                        //We currently don't use this storage to do anything meaningful. It is left for future. 
+                        //condorVm.addLocalFile(file);
+//                        ReplicaCatalog.addStorageList(file.getName(), Integer.toString(vmId));
+                        break;
+                }
+            }
+        }
+        return time;
+    }
+    
+    
     @Override
     protected void updateCloudletProcessing() {
         // if some time passed since last processing
@@ -418,6 +644,7 @@ public class WorkflowDatacenter extends Datacenter {
                 }
             }
         }
+        sendNow(this.getHostConsumptionMonitor().getId(), WorkflowSimTags.MONITORING, this.getVmList());
     }
     /*
      * Register a file to the storage if it is an output file

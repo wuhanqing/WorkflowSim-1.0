@@ -15,10 +15,15 @@
  */
 package org.workflowsim;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.cloudbus.cloudsim.CloudletScheduler;
+import org.cloudbus.cloudsim.File;
 import org.cloudbus.cloudsim.Vm;
 import org.workflowsim.utils.ReplicaCatalog;
 import org.workflowsim.utils.ReplicaCatalog.FileSystem;
+
 
 /**
  * Condor Vm extends a VM: the difference is it has a locl storage system and it
@@ -29,7 +34,19 @@ import org.workflowsim.utils.ReplicaCatalog.FileSystem;
  * @date Apr 9, 2013
  */
 public class CondorVM extends Vm {
+	
 
+	private List<String> fileList = new ArrayList<String>();
+	
+	private int check;
+
+	private double remainTime = 0;
+	
+	private double markTime = 0;
+	
+	//当前一次的调度中，已分配的任务所需的执行时间
+	private double nTime = 0;
+	
     /*
      * The local storage system a vm has if file.system=LOCAL
      */
@@ -253,4 +270,45 @@ public class CondorVM extends Vm {
         return false;
 
     }
+
+	public int getCheck() {
+		return check;
+	}
+
+	public void setCheck(int check) {
+		this.check = check;
+	}
+
+	public double getRemainTime() {
+		return remainTime;
+	}
+
+	public void setRemainTime(double remainTime) {
+		this.remainTime = remainTime;
+	}
+
+	public double getMarkTime() {
+		return markTime;
+	}
+
+	public void setMarkTime(double markTime) {
+		this.markTime = markTime;
+	}
+	
+	public List<String> getFileList() {
+		return fileList;
+	}
+
+	public void setFileList(List<String> fileList) {
+		this.fileList = fileList;
+	}
+    
+	public double getnTime() {
+		return nTime;
+	}
+
+	public void setnTime(double nTime) {
+		this.nTime = nTime;
+	}
+	
 }

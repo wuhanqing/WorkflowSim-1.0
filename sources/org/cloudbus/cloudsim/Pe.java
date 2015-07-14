@@ -26,6 +26,18 @@ public class Pe {
 
 	/** Denotes Pe is allocated and hence busy in processing Cloudlet. */
 	public static final int BUSY = 2;
+	
+	public static final int NAP = 4;
+	
+	public static final int SAVE = 10;
+	
+	public static final int NORMAL = 11;
+	
+	private double sleepTime = 0.0;
+	
+	public double peNapTimeWithoutHostSleep = 0.0;
+	
+	private double lastMonitorTime = 0.0;
 
 	/**
 	 * Denotes Pe is failed and hence it can't process any Cloudlet at this moment. This Pe is
@@ -35,6 +47,8 @@ public class Pe {
 
 	/** The id. */
 	private int id;
+	
+	private int style;
 
 	// FOR SPACE SHARED RESOURCE: Jan 21
 	/** The status of Pe: FREE, BUSY, FAILED: . */
@@ -53,6 +67,15 @@ public class Pe {
 	 * @post $none
 	 */
 	public Pe(int id, PeProvisioner peProvisioner) {
+		setId(id);
+		setPeProvisioner(peProvisioner);
+
+		// when created it should be set to FREE, i.e. available for use.
+		status = FREE;
+	}
+	
+	public Pe(int style,int id, PeProvisioner peProvisioner) {
+		setStyle(style);
 		setId(id);
 		setPeProvisioner(peProvisioner);
 
@@ -172,4 +195,44 @@ public class Pe {
 		return peProvisioner;
 	}
 
+	public double getSleepTime()
+	{
+		return sleepTime;
+	}
+
+	public void setSleepTime(double sleepTime)
+	{
+		this.sleepTime = sleepTime;
+	}
+
+	public double getLastMonitorTime()
+	{
+		return lastMonitorTime;
+	}
+
+	public void setLastMonitorTime(double lastMonitorTime)
+	{
+		this.lastMonitorTime = lastMonitorTime;
+	}
+
+	public double getPeNapTimeWithoutHostSleep()
+	{
+		return peNapTimeWithoutHostSleep;
+	}
+
+	public void setPeNapTimeWithoutHostSlppe(double peNapTimeWithoutHostSleep)
+	{
+		this.peNapTimeWithoutHostSleep = peNapTimeWithoutHostSleep;
+	}
+
+	public int getStyle() {
+		return style;
+	}
+
+	public void setStyle(int style) {
+		this.style = style;
+	}
+
+	
+	
 }

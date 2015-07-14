@@ -250,9 +250,9 @@ public class BalancedClustering extends BasicClustering {
         for (Task set : this.getTaskList()) {
             if (set.getChildList().size() >= 2) {
                 for (int i = 0; i < set.getChildList().size(); i++) {
-                    Task children = (Task) set.getChildList().get(i);
+                    Task children = set.getChildList().get(i);
                     for (int j = i + 1; j < set.getChildList().size(); j++) {
-                        Task another = (Task) set.getChildList().get(j);
+                        Task another = set.getChildList().get(j);
                         // avoid unnecessary checks
                         if (children.getDepth() > another.getDepth()) {
                             if (check(another, children)) {
@@ -421,7 +421,7 @@ public class BalancedClustering extends BasicClustering {
                 for (Task task : set.getTaskList()) {
                     for (Iterator tIt = task.getParentList().iterator(); tIt.hasNext();) {
                         Task parent = (Task) tIt.next();
-                        TaskSet parentSet = (TaskSet) mTask2TaskSet.get(parent);
+                        TaskSet parentSet = mTask2TaskSet.get(parent);
                         if (!set.getParentList().contains(parentSet) && set != parentSet) {
                             set.getParentList().add(parentSet);
                         }
@@ -429,7 +429,7 @@ public class BalancedClustering extends BasicClustering {
                     }
                     for (Iterator tIt = task.getChildList().iterator(); tIt.hasNext();) {
                         Task child = (Task) tIt.next();
-                        TaskSet childSet = (TaskSet) mTask2TaskSet.get(child);
+                        TaskSet childSet = mTask2TaskSet.get(child);
                         if (!set.getChildList().contains(childSet) && set != childSet) {
                             set.getChildList().add(childSet);
                         }

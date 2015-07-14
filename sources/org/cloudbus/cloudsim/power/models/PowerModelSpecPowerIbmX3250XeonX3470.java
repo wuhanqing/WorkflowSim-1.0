@@ -28,6 +28,9 @@ public class PowerModelSpecPowerIbmX3250XeonX3470 extends PowerModelSpecPower {
 	/** The power. */
 	private final double[] power = { 41.6, 46.7, 52.3, 57.9, 65.4, 73, 80.7, 89.5, 99.6, 105, 113 };
 
+	private final double[] performancePerPower = { 0, 665, 1205, 1621, 1930, 2143, 2361, 2466, 2539, 2685, 2767 };
+	
+	private final double averagePPP = 2098;
 	/*
 	 * (non-Javadoc)
 	 * @see org.cloudbus.cloudsim.power.models.PowerModelSpecPower#getPowerData(int)
@@ -35,6 +38,15 @@ public class PowerModelSpecPowerIbmX3250XeonX3470 extends PowerModelSpecPower {
 	@Override
 	protected double getPowerData(int index) {
 		return power[index];
+	}
+	@Override
+	protected double getPerformanceData(int index) {
+		return performancePerPower[index];
+	}
+	
+	@Override
+	public double getAveragePPP() throws IllegalAccessException {
+		return averagePPP;
 	}
 
 }

@@ -17,8 +17,6 @@
  */
 package org.workflowsim.reclustering;
 
-import org.cloudbus.cloudsim.Log;
-
 /**
  * This ClusteringSizeEstimator estimates the optimal size of task clustering.
  *

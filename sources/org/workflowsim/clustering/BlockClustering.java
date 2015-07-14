@@ -149,7 +149,7 @@ public class BlockClustering extends BasicClustering {
                     int pNum = node.getParentList().size();
                     int cNum = node.getChildList().size();
                     if (cNum == 1) {
-                        Task child = (Task) node.getChildList().get(0);
+                        Task child = node.getChildList().get(0);
                         if (!getCheck(child.getCloudletId()) && child.getParentList().size() == 1) {
                             setCheck(child.getCloudletId());
                             sucList.add(child);

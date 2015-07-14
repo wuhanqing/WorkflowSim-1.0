@@ -14,6 +14,9 @@ import java.util.Scanner;
 
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSchedulerDynamicWorkload;
+import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.Cpu;
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterBroker;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
@@ -25,6 +28,7 @@ import org.cloudbus.cloudsim.Pe;
 import org.cloudbus.cloudsim.Storage;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicy;
+import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.VmSchedulerTimeSharedOverSubscription;
 import org.cloudbus.cloudsim.VmStateHistoryEntry;
 import org.cloudbus.cloudsim.power.PowerDatacenter;
@@ -37,6 +41,7 @@ import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
 import org.cloudbus.cloudsim.util.MathUtil;
+import org.workflowsim.CondorVM;
 
 /**
  * The Class Helper.
@@ -109,6 +114,219 @@ public class Helper {
 		}
 		return hostList;
 	}
+	
+	//By wuhanqing
+	//两种，VM（1000，1500）130台
+//	public static List<CondorVM> createCondorVmList(int brokerId,
+//			int vmsNumber, int hostNumber) {
+//		List<CondorVM> vms = new ArrayList<CondorVM>();
+//		int j = 0;
+//		int k = 0;
+//		while (j < 2) {
+//			for (int i = 0; i < 20; i++) {
+//				vms.add(new CondorVM(k, brokerId, Constants.VM_MIPS2[j],
+//						Constants.VM_PES2[j], Constants.VM_RAM2[j],
+//						Constants.VM_BW2, Constants.VM_SIZE2, "Xen",
+//						new CloudletSchedulerTimeShared()));
+//				k++;
+//			}
+//			j++;
+//
+//		}
+//		j = 0;
+//		while (j < 2) {
+//			for (int i = 0; i < 20; i++) {
+//				vms.add(new CondorVM(k, brokerId, Constants.VM_MIPS2[j],
+//						Constants.VM_PES2[j], Constants.VM_RAM2[j],
+//						Constants.VM_BW2, Constants.VM_SIZE2, "Xen",
+//						new CloudletSchedulerTimeShared()));
+//				k++;
+//			}
+//			j++;
+//		}
+//		j = 0;
+//		while (j < 2) {
+//			for (int i = 0; i < 10; i++) {
+//				vms.add(new CondorVM(k, brokerId, Constants.VM_MIPS2[j],
+//						Constants.VM_PES2[j], Constants.VM_RAM2[j],
+//						Constants.VM_BW2, Constants.VM_SIZE2, "Xen",
+//						new CloudletSchedulerTimeShared()));
+//				k++;
+//			}
+//			j++;
+//		}
+//		j = 0;
+//		while (j < 2) {
+//			for (int i = 0; i < 10; i++) {
+//				vms.add(new CondorVM(k, brokerId, Constants.VM_MIPS2[j],
+//						Constants.VM_PES2[j], Constants.VM_RAM2[j],
+//						Constants.VM_BW2, Constants.VM_SIZE2, "Xen",
+//						new CloudletSchedulerTimeShared()));
+//				k++;
+//			}
+//			j++;
+//		}
+//		j = 0;
+//		for (int i = 0; i < 10; i++) {
+//			vms.add(new CondorVM(k, brokerId, Constants.VM_MIPS2[0],
+//					Constants.VM_PES2[0], Constants.VM_RAM2[0],
+//					Constants.VM_BW2, Constants.VM_SIZE2, "Xen",
+//					new CloudletSchedulerTimeShared()));
+//			k++;
+//		}
+//		j++;
+//		
+//		return vms;
+//	}
+	
+	
+	//三种，VM（1000，1500，2000）110台，情况下，傻瓜式创建
+	public static List<CondorVM> createCondorVmList(int brokerId,
+			int vmsNumber, int hostNumber) {
+		List<CondorVM> vms = new ArrayList<CondorVM>();
+		int j = 0;
+		int k = 0;
+		while (j < 3) {
+			for (int i = 0; i < 20; i++) {
+				vms.add(new CondorVM(k, brokerId, Constants.VM_MIPS3[j],
+						Constants.VM_PES3[j], Constants.VM_RAM3[j],
+						Constants.VM_BW3, Constants.VM_SIZE3, "Xen",
+						new CloudletSchedulerTimeShared()));
+				k++;
+			}
+			j++;
+
+		}
+		j = 0;
+		while (j < 3) {
+			for (int i = 0; i < 10; i++) {
+				vms.add(new CondorVM(k, brokerId, Constants.VM_MIPS3[j],
+						Constants.VM_PES3[j], Constants.VM_RAM3[j],
+						Constants.VM_BW3, Constants.VM_SIZE3, "Xen",
+						new CloudletSchedulerTimeShared()));
+				k++;
+			}
+			j++;
+		}
+		j = 0;
+		while (j < 2) {
+			for (int i = 0; i < 10; i++) {
+				vms.add(new CondorVM(k, brokerId, Constants.VM_MIPS3[j],
+						Constants.VM_PES3[j], Constants.VM_RAM3[j],
+						Constants.VM_BW3, Constants.VM_SIZE3, "Xen",
+						new CloudletSchedulerTimeShared()));
+				k++;
+			}
+			j++;
+
+		}
+		return vms;
+	}
+	
+//	public static List<CondorVM> createCondorVmList(int brokerId, int vmsNumber, int hostNumber) {
+//		List<CondorVM> vms = new ArrayList<CondorVM>();	
+//		for (int i = 0; i < vmsNumber; i++) {
+//			int j = i;
+//			if(j >= Constants.VM_TYPES3 * hostNumber) {
+//				int a = j / (Constants.VM_TYPES3 * hostNumber);
+//				for(int k = 0; k < a; k++) {
+//					j -= Constants.VM_TYPES3 * hostNumber;
+//				}	
+//			}
+//			if(j < Constants.VM_TYPES3 * hostNumber) {
+//				int vmType = j / hostNumber;
+//				vms.add(new CondorVM(
+//						i,
+//						brokerId,
+//						Constants.VM_MIPS3[vmType],
+//						Constants.VM_PES3[vmType],
+//						Constants.VM_RAM3[vmType],
+//						Constants.VM_BW3,
+//						Constants.VM_SIZE3,
+//						"Xen",
+//						new CloudletSchedulerTimeShared()));
+//			}
+//		}
+//		return vms;
+//	}
+	
+//	public static List<CondorVM> createCondorVmList(int brokerId, int vmsNumber, int hostNumber) {
+//		List<CondorVM> vms = new ArrayList<CondorVM>();
+//		for (int i = 0; i < vmsNumber; i++) {
+//			int vmType = i / (int) Math.ceil((double) vmsNumber / Constants.VM_TYPES1);
+//			vms.add(new CondorVM(
+//					i,
+//					brokerId,
+//					Constants.VM_MIPS1[vmType],
+//					Constants.VM_PES1[vmType],
+//					Constants.VM_RAM1[vmType],
+//					Constants.VM_BW1,
+//					Constants.VM_SIZE1,
+//					"Xen",
+//					new CloudletSchedulerSpaceShared()));
+//		}
+//		return vms;
+//	}
+	
+	public static List<Host> createCondorHostList1(int hostsNumber) {
+		List<Host> hostList = new ArrayList<Host>();
+		for (int i = 0; i < hostsNumber; i++) {
+			int hostType = i % Constants.HOST_TYPES2;
+
+			List<Pe> peList = new ArrayList<Pe>();
+			for (int j = 0; j < Constants.HOST_PES2[hostType]; j++) {
+				peList.add(new Pe(j, new PeProvisionerSimple(Constants.HOST_MIPS2[hostType])));
+			}
+			List<Cpu> cpuList = new ArrayList<Cpu>();
+			Cpu cpu = new Cpu(0);
+			cpu.setPeList(peList);
+			cpuList.add(cpu);
+
+			hostList.add(new Host(
+					cpuList,
+					Constants.HOST_POWER2[hostType].getPower(0),
+					i,
+					new RamProvisionerSimple(Constants.HOST_RAM2[hostType]),
+					new BwProvisionerSimple(Constants.HOST_BW2),
+					Constants.HOST_STORAGE2,
+					peList,
+					new VmSchedulerTimeShared(peList),
+					Constants.HOST_POWER2[hostType]));
+		}
+		return hostList;
+	}
+	
+	
+	
+	public static List<Host> createCondorHostList(int hostsNumber) {
+		List<Host> hostList = new ArrayList<Host>();
+		for (int i = 0; i < hostsNumber; i++) {
+			int hostType = i % Constants.HOST_TYPES1;
+
+			List<Pe> peList = new ArrayList<Pe>();
+			for (int j = 0; j < Constants.HOST_PES1[hostType]; j++) {
+				peList.add(new Pe(j, new PeProvisionerSimple(Constants.HOST_MIPS1[hostType])));
+			}
+			List<Cpu> cpuList = new ArrayList<Cpu>();
+			Cpu cpu = new Cpu(0);
+			cpu.setPeList(peList);
+			cpuList.add(cpu);
+
+			hostList.add(new Host(
+					cpuList,
+					Constants.HOST_POWER1[hostType].getPower(0),
+					i,
+					new RamProvisionerSimple(Constants.HOST_RAM1[hostType]),
+					new BwProvisionerSimple(Constants.HOST_BW1),
+					Constants.HOST_STORAGE1,
+					peList,
+					new VmSchedulerTimeShared(peList),
+					Constants.HOST_POWER1[hostType]));
+		}
+		return hostList;
+	}
+	
+	
 
 	/**
 	 * Creates the broker.

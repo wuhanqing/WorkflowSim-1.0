@@ -58,9 +58,9 @@ public class WorkflowSimTags {
     /**
      * EnergySavingMonitor Events
      */
-    public static final int MONITOR_ON = BASE + 11;
+    public static final int MONITORING = BASE + 11;
     public static final int HOST_SLEEP_TIMEING = BASE + 12;
-    
+    public static final int HOST_SAVING_STATISTICS = BASE + 13;
     
     /**
      * Private Constructor

@@ -18,6 +18,8 @@ package org.workflowsim;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cloudbus.cloudsim.Cloudlet;
+
 /**
  * Job is an extention to Task. It is basically a group of tasks. In
  * WorkflowSim, the ClusteringEngine merges tasks into jobs (group of tasks) and
@@ -29,6 +31,8 @@ import java.util.List;
  * @date Apr 9, 2013
  */
 public class Job extends Task {
+	
+	private Cloudlet cloudlet;
 
     /*
      * The list of tasks a job has. It is the only difference between Job and Task. 
@@ -98,4 +102,14 @@ public class Job extends Task {
 
         return super.getParentList();
     }
+
+	public Cloudlet getCloudlet() {
+		return cloudlet;
+	}
+
+	public void setCloudlet(Cloudlet cloudlet) {
+		this.cloudlet = cloudlet;
+	}
+    
+    
 }

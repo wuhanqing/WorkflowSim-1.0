@@ -8,9 +8,12 @@
 
 package org.cloudbus.cloudsim.core;
 
+import java.util.List;
+
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.NetworkTopology;
 import org.cloudbus.cloudsim.core.predicates.Predicate;
+import org.workflowsim.Task;
 
 /**
  * This class represents a simulation entity. An entity handles events and can send events to other
@@ -430,6 +433,7 @@ public abstract class SimEntity implements Cloneable {
 		copy.setEventBuffer(null);
 		return copy;
 	}
+
 
 	// Used to set a cloned entity's name
 	/**

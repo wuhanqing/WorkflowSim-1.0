@@ -1,8 +1,10 @@
 package org.cloudbus.cloudsim.examples.power;
 
 import org.cloudbus.cloudsim.power.models.PowerModel;
+import org.cloudbus.cloudsim.power.models.PowerModelSpecPowerHpProLiantMl110G3PentiumD930;
 import org.cloudbus.cloudsim.power.models.PowerModelSpecPowerHpProLiantMl110G4Xeon3040;
 import org.cloudbus.cloudsim.power.models.PowerModelSpecPowerHpProLiantMl110G5Xeon3075;
+import org.cloudbus.cloudsim.power.models.PowerModelSpecPowerIbmX3250XeonX3470;
 
 /**
  * If you are using any algorithms, policies or workload included in the power package, please cite
@@ -44,6 +46,28 @@ public class Constants {
 	public final static int VM_BW		= 100000; // 100 Mbit/s
 	public final static int VM_SIZE		= 2500; // 2.5 GB
 
+	public final static int VM_TYPES3	= 3;
+	public final static int[] VM_MIPS3	= {1000,1500,2000};
+	public final static int[] VM_PES3	= {1,1,1};
+	public final static int[] VM_RAM3	= {1280,1280,1280};
+	public final static int VM_BW3		= 100000; // 100 Mbit/s
+	public final static int VM_SIZE3	= 2500; // 2.5 GB
+	
+	public final static int VM_TYPES2	= 2;
+	public final static int[] VM_MIPS2	= {1000,1500};
+	public final static int[] VM_PES2	= {1,1};
+	public final static int[] VM_RAM2	= {870, 870};
+	public final static int VM_BW2		= 100000; // 100 Mbit/s
+	public final static int VM_SIZE2	= 2500; // 2.5 GB
+	
+	public final static int VM_TYPES1	= 1;
+	public final static int[] VM_MIPS1	= {1000};
+	public final static int[] VM_PES1	= {1};
+	public final static int[] VM_RAM1	= {1740};
+	public final static int VM_BW1		= 100000; // 100 Mbit/s
+	public final static int VM_SIZE1	= 2500; // 2.5 GB
+	
+	
 	/*
 	 * Host types:
 	 *   HP ProLiant ML110 G4 (1 x [Xeon 3040 1860 MHz, 2 cores], 4GB)
@@ -53,7 +77,7 @@ public class Constants {
 	public final static int HOST_TYPES	 = 2;
 	public final static int[] HOST_MIPS	 = { 1860, 2660 };
 	public final static int[] HOST_PES	 = { 2, 2 };
-	public final static int[] HOST_RAM	 = { 4096, 4096 };
+	public final static int[] HOST_RAM	 = { 40960, 40960 };
 	public final static int HOST_BW		 = 1000000; // 1 Gbit/s
 	public final static int HOST_STORAGE = 1000000; // 1 GB
 
@@ -61,5 +85,31 @@ public class Constants {
 		new PowerModelSpecPowerHpProLiantMl110G4Xeon3040(),
 		new PowerModelSpecPowerHpProLiantMl110G5Xeon3075()
 	};
-
+	
+	//wuhanqing
+	public final static int HOST_TYPES1	 = 2;
+	public final static int[] HOST_MIPS1	 = { 2660, 2933 };
+	public final static int[] HOST_PES1	 = { 2, 4 };
+	public final static int[] HOST_RAM1	 = { 40960, 80960 };
+	public final static int HOST_BW1		 = 2000000; // 1 Gbit/s
+	public final static int HOST_STORAGE1 = 1000000; // 1 GB
+	
+	public final static PowerModel[] HOST_POWER1 = {
+		new PowerModelSpecPowerHpProLiantMl110G5Xeon3075(),
+		new PowerModelSpecPowerIbmX3250XeonX3470()
+	};
+	
+	//wuhanqing
+	public final static int HOST_TYPES2	 = 2;
+	public final static int[] HOST_MIPS2	 = { 3000, 2660 };
+	public final static int[] HOST_PES2	 = { 2, 2 };
+	public final static int[] HOST_RAM2	 = { 80960, 80960 };
+	public final static int HOST_BW2		 = 1000; // 1 Gbit/s
+	public final static int HOST_STORAGE2 = 1000000; // 1 GB
+	
+	public final static PowerModel[] HOST_POWER2 = {
+		new PowerModelSpecPowerHpProLiantMl110G3PentiumD930(),
+		new PowerModelSpecPowerHpProLiantMl110G5Xeon3075()
+	};
+	
 }

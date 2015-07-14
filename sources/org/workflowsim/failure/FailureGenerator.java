@@ -25,7 +25,6 @@ import org.workflowsim.Job;
 import org.workflowsim.Task;
 import org.apache.commons.math3.distribution.WeibullDistribution;
 import org.workflowsim.utils.DistributionGenerator;
-import org.workflowsim.utils.Parameters;
 
 /**
  * FailureGenerator creates a failure when a job returns

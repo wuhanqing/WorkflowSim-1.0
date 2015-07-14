@@ -392,7 +392,7 @@ public final class ClusteringEngine extends SimEntity {
      */
     @SuppressWarnings("unchecked")
     public List<Task> getTaskList() {
-        return (List<Task>) taskList;
+        return taskList;
     }
 
     /**

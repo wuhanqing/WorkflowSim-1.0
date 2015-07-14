@@ -21,8 +21,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.Cpu;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.HarddriveStorage;
 import org.cloudbus.cloudsim.Host;
@@ -30,13 +32,15 @@ import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Pe;
 import org.cloudbus.cloudsim.Storage;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.VmAllocationPolicyWuhanqing;
 import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.examples.power.Constants;
 import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
-import org.workflowsim.ClusterStorage;
 import org.workflowsim.CondorVM;
+import org.workflowsim.HostConsumptionMonitor;
 import org.workflowsim.WorkflowDatacenter;
 import org.workflowsim.Job;
 import org.workflowsim.WorkflowEngine;
@@ -102,7 +106,7 @@ public class WorkflowSimBasicExample1 {
             /**
              * Should change this based on real physical path
              */
-            String daxPath = "C:/WorkflowSim_whq/config/dax/Montage_25.xml";
+            String daxPath = "/Users/wuhanqing/Dropbox/Java/WorkflowSim-1.0-master/config/dax/Montage_25.xml";
             if(daxPath == null){
                 Log.printLine("Warning: Please replace daxPath with the physical path in your working environment!");
                 return;
@@ -124,7 +128,7 @@ public class WorkflowSimBasicExample1 {
             /**
              * No overheads 
              */
-            OverheadParameters op = new OverheadParameters(0, null, null, null, null, 0);;
+            OverheadParameters op = new OverheadParameters(0, null, null, null, null, 0);
             
             /**
              * No Clustering
@@ -207,18 +211,27 @@ public class WorkflowSimBasicExample1 {
             peList1.add(new Pe(0, new PeProvisionerSimple(mips))); // need to store Pe id and MIPS Rating
             peList1.add(new Pe(1, new PeProvisionerSimple(mips)));
 
+            List<Cpu> cpuList = new ArrayList<Cpu>();
+			Cpu cpu = new Cpu(0);
+			cpu.setPeList(peList1);
+			cpuList.add(cpu);
+
+            
             int hostId = 0;
             int ram = 2048; //host memory (MB)
             long storage = 1000000; //host storage
             int bw = 10000;
             hostList.add(
                     new Host(
+                    cpuList,
+        			Constants.HOST_POWER1[0].getPower(0),
                     hostId,
                     new RamProvisionerSimple(ram),
                     new BwProvisionerSimple(bw),
                     storage,
                     peList1,
-                    new VmSchedulerTimeShared(peList1))); // This is our first machine
+                    new VmSchedulerTimeShared(peList1),
+                    Constants.HOST_POWER1[0])); // This is our first machine
             hostId++;
 
         }
@@ -253,7 +266,8 @@ public class WorkflowSimBasicExample1 {
             HarddriveStorage s1 = new HarddriveStorage(name, 1e12);
             s1.setMaxTransferRate(maxTransferRate);
             storageList.add(s1);
-            datacenter = new WorkflowDatacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+            HostConsumptionMonitor hostComsumptionMonitor = new HostConsumptionMonitor("Monitor_0");
+            datacenter = new WorkflowDatacenter(hostComsumptionMonitor, name, characteristics, new VmAllocationPolicyWuhanqing(hostList), storageList, 0);
         } catch (Exception e) {
             e.printStackTrace();
         }

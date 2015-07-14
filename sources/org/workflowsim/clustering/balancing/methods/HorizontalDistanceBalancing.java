@@ -61,7 +61,8 @@ public class HorizontalDistanceBalancing extends HorizontalImpactBalancing {
      * Sort taskSet based on their impact factors and then merge similar taskSet together
      * @param taskList 
      */
-    public void process(ArrayList<TaskSet> taskList) {
+    @Override
+	public void process(ArrayList<TaskSet> taskList) {
 
         if (taskList.size() > getClusterNum()) {
             ArrayList<TaskSet> jobList = new ArrayList<TaskSet>();
@@ -174,8 +175,8 @@ public class HorizontalDistanceBalancing extends HorizontalImpactBalancing {
 
         for(int i = 0; i < size; i++){
             for(int j = 0; j <i; j++){
-                TaskSet setA = (TaskSet)taskList.get(i);
-                TaskSet setB = (TaskSet)taskList.get(j);
+                TaskSet setA = taskList.get(i);
+                TaskSet setB = taskList.get(j);
                 int distance = calDistance(setA, setB);
                 
                 distances[i][j] = distance;
@@ -190,7 +191,7 @@ public class HorizontalDistanceBalancing extends HorizontalImpactBalancing {
                 
                 record[index_record] = max_i;
                 index_record ++;
-                TaskSet set = (TaskSet)taskList.get(max_i);
+                TaskSet set = taskList.get(max_i);
                 TaskSet job = jobList.get(job_index);
                 addTaskSet2TaskSet(set, job);
                 job.addTask(set.getTaskList());
@@ -292,7 +293,8 @@ public class HorizontalDistanceBalancing extends HorizontalImpactBalancing {
      * @param checkSet
      * @return 
      */
-    protected TaskSet getCandidateTastSet(ArrayList<TaskSet> taskList, 
+    @Override
+	protected TaskSet getCandidateTastSet(ArrayList<TaskSet> taskList, 
                                             TaskSet checkSet, 
                                             int clusters_size) {
         

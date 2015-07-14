@@ -28,6 +28,10 @@ public class PowerModelSpecPowerHpProLiantMl110G3PentiumD930 extends PowerModelS
 	/** The power. */
 	private final double[] power = { 105, 112, 118, 125, 131, 137, 147, 153, 157, 164, 169 };
 
+	private final double[] performancePerPower = { 0, 47.9, 89.4, 128, 160, 191, 218, 241, 268, 285, 309 };
+
+	private final double averagePPP = 190;
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.cloudbus.cloudsim.power.models.PowerModelSpecPower#getPowerData(int)
@@ -36,5 +40,14 @@ public class PowerModelSpecPowerHpProLiantMl110G3PentiumD930 extends PowerModelS
 	protected double getPowerData(int index) {
 		return power[index];
 	}
+	
+	@Override
+	protected double getPerformanceData(int index) {
+		return performancePerPower[index];
+	}
 
+	@Override
+	public double getAveragePPP() throws IllegalAccessException {
+		return this.averagePPP;
+	}
 }

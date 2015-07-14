@@ -8,12 +8,24 @@
 package org.cloudbus.cloudsim;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.lists.PeList;
+import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.provisioners.BwProvisioner;
 import org.cloudbus.cloudsim.provisioners.RamProvisioner;
+import org.cloudbus.cloudsim.Cpu;
+import org.workflowsim.CondorVM;
+
+import com.sun.jndi.url.dns.dnsURLContext;
+
+
+//import sun.nio.ch.PollArrayWrapper;
 
 /**
  * Host executes actions related to management of virtual machines (e.g., creation and destruction).
@@ -26,9 +38,45 @@ import org.cloudbus.cloudsim.provisioners.RamProvisioner;
  */
 public class Host {
 
+
 	/** The id. */
 	private int id;
-
+	
+	/** The host type. */
+	private String name;
+	
+	/** The Watt (W). */
+	
+	private double power;
+	
+	private double consumption;
+	
+	private List<Double> consumptionList = new ArrayList<Double>();
+	
+	private double algorithmW = 0;
+	
+	private double test;
+	
+	private double W;
+	
+	private double lastW;
+	
+	private double work_W;
+	
+	private double idle_W;
+	
+	private double sleep_W;
+	
+	private double sleepPerPE_W;
+	
+	private int state;
+	
+	private double sleepTime = 0.0;
+	
+	private double lastMonitorTime = 0.0;
+	
+	private double hostKw_h = 0;
+	
 	/** The storage. */
 	private long storage;
 
@@ -56,6 +104,15 @@ public class Host {
 	/** The datacenter where the host is placed. */
 	private Datacenter datacenter;
 
+	private List<Cpu> cpuList;
+	
+	private PowerModel powerModel;
+	
+	private double workLoad;
+	
+	private Set<Double[]> w2Time;
+	
+
 	/**
 	 * Instantiates a new host.
 	 * 
@@ -81,6 +138,67 @@ public class Host {
 
 		setPeList(peList);
 		setFailed(false);
+	}
+	
+	public Host(
+			List<Cpu> cpuList,
+			double W,
+
+			int id,
+			RamProvisioner ramProvisioner,
+			BwProvisioner bwProvisioner,
+			long storage,
+			List<? extends Pe> peList,
+			VmScheduler vmScheduler,
+			PowerModel powerModel) {
+		w2Time = new HashSet<Double[]>();
+
+		setPowerModel(powerModel);
+		setId(id);
+		setRamProvisioner(ramProvisioner);
+		setBwProvisioner(bwProvisioner);
+		setStorage(storage);
+		setVmScheduler(vmScheduler);
+		setCpuList(cpuList);
+
+		setPeList(peList);
+		setFailed(false);
+
+	}
+	
+	public Host(
+			PowerModel powerModel,
+			List<Cpu> cpuList,
+			String name,
+			double W,
+			double work_W,
+			double idle_W,
+			double sleep_W,
+			double sleepPerPe_W,
+			int id,
+			RamProvisioner ramProvisioner,
+			BwProvisioner bwProvisioner,
+			long storage,
+			List<? extends Pe> peList,
+			VmScheduler vmScheduler) {
+		w2Time = new HashSet<Double[]>();
+		setPowerModel(powerModel);
+		setId(id);
+		setRamProvisioner(ramProvisioner);
+		setBwProvisioner(bwProvisioner);
+		setStorage(storage);
+		setVmScheduler(vmScheduler);
+		setCpuList(cpuList);
+
+		setPeList(peList);
+		setFailed(false);
+		
+		setName(name);
+		setW(W);
+		setWork_W(work_W);
+		setIdle_W(idle_W);
+		setSleep_W(sleep_W);
+		setSleepPerPE_W(sleepPerPe_W);
 	}
 
 	/**
@@ -619,4 +737,219 @@ public class Host {
 		this.datacenter = datacenter;
 	}
 
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public double getW()
+	{
+		return W;
+	}
+
+	public void setW(double w)
+	{
+		W = w;
+	}
+
+	public double getWork_W()
+	{
+		return work_W;
+	}
+
+	public void setWork_W(double work_W)
+	{
+		this.work_W = work_W;
+	}
+
+	public double getIdle_W()
+	{
+		return idle_W;
+	}
+
+	public void setIdle_W(double idle_W)
+	{
+		this.idle_W = idle_W;
+	}
+
+	public double getSleep_W()
+	{
+		return sleep_W;
+	}
+
+	public void setSleep_W(double sleep_W)
+	{
+		this.sleep_W = sleep_W;
+	}
+
+	public int getState()
+	{
+		return state;
+	}
+
+	public void setState(int state)
+	{
+		this.state = state;
+	}
+
+	public double getSleepTime()
+	{
+		return sleepTime;
+	}
+
+	public void setSleepTime(double sleepTime)
+	{
+		this.sleepTime = sleepTime;
+	}
+
+	public double getLastMonitorTime()
+	{
+		return lastMonitorTime;
+	}
+
+	public void setLastMonitorTime(double lastMonitorTime)
+	{
+		this.lastMonitorTime = lastMonitorTime;
+	}
+
+	public double getSleepPerPE_W()
+	{
+		return sleepPerPE_W;
+	}
+
+	public void setSleepPerPE_W(double sleepPerPE_W)
+	{
+		this.sleepPerPE_W = sleepPerPE_W;
+	}
+
+	public double getHostKw_h()
+	{
+		return hostKw_h;
+	}
+
+	public void setHostKw_h(double hostKw_h)
+	{
+		this.hostKw_h = hostKw_h;
+	}
+
+	public List<Cpu> getCpuList() {
+		return cpuList;
+	}
+
+	public void setCpuList(List<Cpu> cpuList) {
+		this.cpuList = cpuList;
+	}
+
+	public PowerModel getPowerModel() {
+		return powerModel;
+	}
+
+	public void setPowerModel(PowerModel powerModel) {
+		this.powerModel = powerModel;
+	}
+
+	public double getWorkLoad() {
+		return workLoad;
+	}
+
+	public void setWorkLoad(double workLoad) {
+		this.workLoad = workLoad;
+	}
+	
+	public double getCpuUitlization(List<CondorVM> vmList){
+//		List<CondorVM> vmList = this.getVmList();
+		double vmUtilization = 0;
+		double vmMips = 0;
+		for(int i = 0; i < vmList.size(); i++)
+		{
+			CondorVM vm = vmList.get(i);
+			vmUtilization = vm.getCloudletScheduler().getTotalUtilizationOfCpu(CloudSim.clock());
+			if(vmUtilization > 0)
+			{
+				vmMips += vm.getMips() * vmUtilization;
+			}
+		}
+		double utilization = vmMips / this.getTotalMips();
+		
+		return utilization;
+
+	}
+
+	public double getPower() {
+		return power;
+	}
+
+	protected void setPower(double power) {
+		this.power = power;
+	}
+	
+	public double getPower(double utilization) {
+		
+		double power = 0;
+		try {
+			power = getPowerModel().getPower(utilization);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		return power;
+	}
+
+	public Set<Double[]> getW2Time()
+	{
+		return w2Time;
+	}
+
+	public void setW2Time(Set<Double[]> w2Time)
+	{
+		this.w2Time = w2Time;
+	}
+
+	public double getLastW()
+	{
+		return lastW;
+	}
+
+	public void setLastW(double lastW)
+	{
+		this.lastW = lastW;
+	}
+
+	public double getTest() {
+		return test;
+	}
+
+	public void setTest(double test) {
+		this.test = test;
+	}
+
+	public double getConsumption() {
+		return consumption;
+	}
+
+	public void setConsumption(double consumption) {
+		this.consumption = consumption;
+	}
+
+	public List<Double> getConsumptionList() {
+		return consumptionList;
+	}
+
+	public void setConsumptionList(List<Double> consumptionList) {
+		consumptionList = consumptionList;
+	}
+	
+	public double getAlgorithmW() {
+		return algorithmW;
+	}
+
+	public void setAlgorithmW(double algorithmW) {
+		this.algorithmW = algorithmW;
+	}
+	
 }

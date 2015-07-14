@@ -67,7 +67,7 @@ public class HorizontalRuntimeBalancing extends BalancingMethod {
                 for (TaskSet set : taskList) {
                     //MinHeap is required 
                     sortListIncreasing(jobList);
-                    TaskSet job = (TaskSet) jobList.get(0);
+                    TaskSet job = jobList.get(0);
                     job.addTask(set.getTaskList());
                     //update dependency
                     for (Task task : set.getTaskList()) {
@@ -89,7 +89,8 @@ public class HorizontalRuntimeBalancing extends BalancingMethod {
      */
     private void sortListIncreasing(ArrayList taskList) {
         Collections.sort(taskList, new Comparator<TaskSet>() {
-            public int compare(TaskSet t1, TaskSet t2) {
+            @Override
+			public int compare(TaskSet t1, TaskSet t2) {
                 //Decreasing order
                 return (int) (t1.getJobRuntime() - t2.getJobRuntime());
             }
@@ -103,7 +104,8 @@ public class HorizontalRuntimeBalancing extends BalancingMethod {
      */
     private void sortListDecreasing(ArrayList taskList) {
         Collections.sort(taskList, new Comparator<TaskSet>() {
-            public int compare(TaskSet t1, TaskSet t2) {
+            @Override
+			public int compare(TaskSet t1, TaskSet t2) {
                 //Decreasing order
                 return (int) (t2.getJobRuntime() - t1.getJobRuntime());
             }

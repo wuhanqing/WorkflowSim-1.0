@@ -45,6 +45,22 @@ public abstract class PowerModelSpecPower implements PowerModel {
 		double power = power1 + delta * (utilization - (double) utilization1 / 10) * 100;
 		return power;
 	}
+	
+	public double getPerformancePerPower(double utilization) throws IllegalArgumentException {
+		if (utilization < 0 || utilization > 1) {
+			throw new IllegalArgumentException("Utilization value must be between 0 and 1");
+		}
+		if (utilization % 0.1 == 0) {
+			return getPerformanceData((int) (utilization * 10));
+		}
+		int utilization1 = (int) Math.floor(utilization * 10);
+		int utilization2 = (int) Math.ceil(utilization * 10);
+		double performancePerPower1 = getPerformanceData(utilization1);
+		double performancePerPower2 = getPerformanceData(utilization2);
+		double delta = (performancePerPower2 - performancePerPower1) / 10;
+		double performancePerPower = performancePerPower1 + delta * (utilization - (double) utilization1 / 10) * 100;
+		return performancePerPower;
+	}
 
 	/**
 	 * Gets the power data.
@@ -53,5 +69,12 @@ public abstract class PowerModelSpecPower implements PowerModel {
 	 * @return the power data
 	 */
 	protected abstract double getPowerData(int index);
+	
+	protected abstract double getPerformanceData(int index);
+
+	protected double getPerformancePerPower(int index) {
+		
+		return 0;
+	}
 
 }

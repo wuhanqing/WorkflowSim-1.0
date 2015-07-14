@@ -17,6 +17,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.SimEvent;
+import org.workflowsim.HostConsumptionMonitor;
 
 /**
  * Datacenter class is a CloudResource whose hostList are virtualized. It deals with processing of
@@ -51,6 +52,12 @@ public class Datacenter extends SimEntity {
 
 	/** The scheduling interval. */
 	private double schedulingInterval;
+	
+	private HostConsumptionMonitor hostConsumptionMonitor;
+	
+	private List<Double> consumptionList = new ArrayList<Double>();
+	
+	private double consumption;
 
 	/**
 	 * Allocates a new PowerDatacenter object.
@@ -77,9 +84,40 @@ public class Datacenter extends SimEntity {
 			DatacenterCharacteristics characteristics,
 			VmAllocationPolicy vmAllocationPolicy,
 			List<Storage> storageList,
-			double schedulingInterval) throws Exception {
+			double schedulingInterval)throws Exception {
 		super(name);
 
+		setCharacteristics(characteristics);
+		setVmAllocationPolicy(vmAllocationPolicy);
+		setLastProcessTime(0.0);
+		setStorageList(storageList);
+		setVmList(new ArrayList<Vm>());
+		setSchedulingInterval(schedulingInterval);
+
+		for (Host host : getCharacteristics().getHostList()) {
+			host.setDatacenter(this);
+		}
+
+		// If this resource doesn't have any PEs then no useful at all
+		if (getCharacteristics().getNumberOfPes() == 0) {
+			throw new Exception(super.getName()
+					+ " : Error - this entity has no PEs. Therefore, can't process any Cloudlets.");
+		}
+
+		// stores id of this class
+		getCharacteristics().setId(super.getId());
+	}
+	
+	public Datacenter(
+			HostConsumptionMonitor hostConsumptionMonitor,
+			String name,
+			DatacenterCharacteristics characteristics,
+			VmAllocationPolicy vmAllocationPolicy,
+			List<Storage> storageList,
+			double schedulingInterval)throws Exception {
+		super(name);
+
+		setHostConsumptionMonitor(hostConsumptionMonitor);
 		setCharacteristics(characteristics);
 		setVmAllocationPolicy(vmAllocationPolicy);
 		setLastProcessTime(0.0);
@@ -1037,6 +1075,8 @@ public class Datacenter extends SimEntity {
 		sendNow(gisID, CloudSimTags.REGISTER_RESOURCE, getId());
 		// Below method is for a child class to override
 		registerOtherEntity();
+		
+		this.getHostConsumptionMonitor().setDatacenter(this);
 	}
 
 	/**
@@ -1175,5 +1215,32 @@ public class Datacenter extends SimEntity {
 	protected void setSchedulingInterval(double schedulingInterval) {
 		this.schedulingInterval = schedulingInterval;
 	}
+
+	public HostConsumptionMonitor getHostConsumptionMonitor()
+	{
+		return hostConsumptionMonitor;
+	}
+
+	public void setHostConsumptionMonitor(HostConsumptionMonitor hostConsumptionMonitor)
+	{
+		this.hostConsumptionMonitor = hostConsumptionMonitor;
+	}
+
+	public List<Double> getConsumptionList() {
+		return consumptionList;
+	}
+
+	public void setConsumptionList(List<Double> consumptionList) {
+		this.consumptionList = consumptionList;
+	}
+
+	public double getConsumption() {
+		return consumption;
+	}
+
+	public void setConsumption(double consumption) {
+		this.consumption = consumption;
+	}
+	
 
 }

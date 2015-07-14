@@ -17,12 +17,15 @@ package org.workflowsim;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.SimEvent;
+import org.omg.CORBA.PUBLIC_MEMBER;
 import org.workflowsim.planning.BasePlanningAlgorithm;
 import org.workflowsim.planning.DHEFTPlanningAlgorithm;
+import org.workflowsim.planning.Determine;
 import org.workflowsim.planning.HEFTPlanningAlgorithm;
 import org.workflowsim.planning.RandomPlanningAlgorithm;
 import org.workflowsim.utils.Parameters;
@@ -54,6 +57,8 @@ public class WorkflowPlanner extends SimEntity {
     private int clusteringEngineId;
     private ClusteringEngine clusteringEngine;
 
+    public static List<Task> totalTaskList = new ArrayList<Task>();
+    public static int totalTaskNum;
     /**
      * Created a new WorkflowPlanner object.
      *
@@ -126,17 +131,33 @@ public class WorkflowPlanner extends SimEntity {
 
     /**
      * Processes events available for this Broker.
+     * @param list 
      *
      * @param ev a SimEvent object
      * @pre ev != null
      * @post $none
      */
-    @Override
+    
+    
     public void processEvent(SimEvent ev) {
         switch (ev.getTag()) {
             case WorkflowSimTags.START_SIMULATION:
                 getWorkflowParser().parse();
-                setTaskList(getWorkflowParser().getTaskList());
+                setTaskList(getWorkflowParser().getTaskList()); 
+                
+                //试验
+        		List<Task> taskList = getTaskList();
+        		totalTaskNum = taskList.size();
+        		ArrayList<Integer> j = new ArrayList<Integer>();
+        		j.add(0);j.add(0);j.add(0);j.add(0);j.add(0);j.add(0);j.add(0);j.add(0);j.add(0);j.add(0);j.add(0);j.add(0);
+        		for(int l = 0; l < taskList.size(); l++)
+        		{
+        			Task task = taskList.get(l);
+        			int depth = task.getDepth();
+        			j.set(depth, j.get(depth)+1);
+        		}
+        		ArrayList<Integer> b = j;
+        		b = null;
 
                 processPlanning();
 
@@ -195,6 +216,9 @@ public class WorkflowPlanner extends SimEntity {
             case DHEFT:
                 planner = new DHEFTPlanningAlgorithm();
                 break;
+            case DETERMINE:
+            	planner = new Determine();
+            	break;
             default:
                 planner = null;
                 break;
@@ -297,7 +321,7 @@ public class WorkflowPlanner extends SimEntity {
      */
     @SuppressWarnings("unchecked")
     public List<Task> getTaskList() {
-        return (List<Task>) taskList;
+        return taskList;
     }
 
     /**

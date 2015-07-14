@@ -18,6 +18,7 @@ package org.workflowsim.examples.failure.clustering;
 import java.io.File;
 import java.util.Calendar;
 import java.util.List;
+
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.workflowsim.CondorVM;
@@ -65,7 +66,7 @@ public class FaultTolerantClusteringExample1 extends FaultTolerantSchedulingExam
             /**
              * Should change this based on real physical path
              */
-            String daxPath = "/Users/chenweiwei/Work/WorkflowSim-1.0/config/dax/Montage_100.xml";
+            String daxPath = "/Users/wuhanqing/Documents/workflowInstance/Montage100/Montage_100_1.xml";
             if (daxPath == null) {
                 Log.printLine("Warning: Please replace daxPath with the physical path in your working environment!");
                 return;
