@@ -3,7 +3,10 @@ package com.wuhanqing.examples;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import org.workflowsim.Task;
 import org.workflowsim.WorkflowParser;
@@ -12,7 +15,9 @@ import org.workflowsim.utils.ReplicaCatalog;
 
 public class Simulation {
 
-	static FileOutputStream fos;
+	public static FileOutputStream fos;
+
+	public static int[][] aaa;
 	
 	public static void main(String[] args) {
 		
@@ -21,15 +26,46 @@ public class Simulation {
 			
 			String file = "Montage_100_"+ (i+1) + ".xml";
 			String daxPath = "/Users/wuhanqing/Documents/workflowInstance/Montage100/" + file;
-			
+
+			//随机设置任务可执行的虚拟机数组
 			ReplicaCatalog.FileSystem file_system = ReplicaCatalog.FileSystem.LOCAL;
 			ReplicaCatalog.init(file_system);
 			WorkflowParser parser = new WorkflowParser(7,"","",daxPath);
 			parser.parseXmlFile(daxPath);
 			List<Task> list = parser.getTaskList();
-			
-			
-			String filePath = "/Users/wuhanqing/Documents/Montage100new.txt";
+			for (Task t : list) {
+				t.cloudletId = t.getCloudletId() - 1;
+			}
+			int vmNum = Example.vmNum;
+			aaa = new int[list.size()][vmNum];
+			for (int j = 0; j < list.size(); j++) {
+				for (int k = 0; k < vmNum; k++) {
+					aaa[j][k] = 1;
+				}
+			}
+
+			Random random = new Random();
+			//randomSize: 可执行VM的数量
+			int randomSize = vmNum / 5;
+			Map<Integer, String> map = new HashMap<>();
+
+			for (int j = 0; j < list.size(); j++) {
+				for (int k = 0; k < randomSize; k++) {
+					Integer num = random.nextInt(vmNum);
+					while (map.containsKey(num)) {
+						num = random.nextInt(vmNum);
+					}
+					map.put(num, "");
+				}
+				for (int a : map.keySet()) {
+					aaa[j][a] = 0;
+				}
+				map.clear();
+			}
+			///////////////////////////////////
+
+			String filePath;
+			filePath = "/Users/wuhanqing/Documents/Montage100new.txt";
 			Parameters.SchedulingAlgorithm MAXMIN_method = Parameters.SchedulingAlgorithm.MAXMIN;
 			Parameters.SchedulingAlgorithm MINMIN_method = Parameters.SchedulingAlgorithm.MINMIN;
 			Parameters.SchedulingAlgorithm HMPC_method = Parameters.SchedulingAlgorithm.HMPCnew;

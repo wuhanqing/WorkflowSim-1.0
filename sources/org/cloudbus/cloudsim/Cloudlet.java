@@ -51,7 +51,7 @@ public class Cloudlet {
 	private int numberOfPes;
 
 	/** The cloudlet ID. */
-	private final int cloudletId;
+	public int cloudletId;
 
 	/** The status of this Cloudlet. */
 	private int status;

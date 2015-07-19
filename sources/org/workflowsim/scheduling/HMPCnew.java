@@ -15,14 +15,9 @@
  */
 package org.workflowsim.scheduling;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.wuhanqing.examples.Simulation;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletScheduler;
 import org.cloudbus.cloudsim.CloudletSchedulerTimeShared;
@@ -133,20 +128,38 @@ public class HMPCnew extends BaseSchedulingAlgorithm
 			double minTime = 0;
 			CloudRank cloudRank1 = cloud2Rank.get(i); 
 			Job job = cloudRank1.job;
-			
+
+			List vList = new ArrayList<>();
+			if (job.getCloudletId() != Simulation.aaa.length) {
+				int[] aaa = Simulation.aaa[job.getCloudletId()];
+				Map<Integer, CondorVM> map = new HashMap<>();
+				for (Object vm1 : getVmList()) {
+					CondorVM vm = (CondorVM) vm1;
+					map.put(vm.getId(), vm);
+				}
+				for (int j = 0; j < aaa.length; j++) {
+					if (aaa[j] == 0) {
+						map.remove(j);
+					}
+				}
+				vList = Arrays.asList(map.values().toArray());
+			} else {
+				vList = getVmList();
+			}
+
 			long averageBW = 0;
-			for (int j = 0; j < getVmList().size(); j++) {
-				CondorVM vm = (CondorVM) getVmList().get(j);
+			for (int j = 0; j < vList.size(); j++) {
+				CondorVM vm = (CondorVM) vList.get(j);
 				long l = vm.getBw();
 				averageBW += l;
 			}
-			averageBW = averageBW / getVmList().size();
+			averageBW = averageBW / vList.size();
 			
 			double timeNeed = 0;
 			
-			for(int j = 0; j < getVmList().size(); j++)
+			for(int j = 0; j < vList.size(); j++)
 			{
-				CondorVM vm = (CondorVM) getVmList().get(j);
+				CondorVM vm = (CondorVM) vList.get(j);
 				
 //				if (vm.getRemainTime() > 0 && vm.getRemainTime() < CloudSim.clock()) {
 //					vm.setRemainTime(0);

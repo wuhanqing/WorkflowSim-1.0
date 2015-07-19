@@ -29,17 +29,7 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.lists.VmList;
 import org.workflowsim.failure.FailureGenerator;
-import org.workflowsim.scheduling.DataAwareSchedulingAlgorithm;
-import org.workflowsim.scheduling.BaseSchedulingAlgorithm;
-import org.workflowsim.scheduling.FCFSSchedulingAlgorithm;
-import org.workflowsim.scheduling.HMPCSchedulingAlgorithm;
-import org.workflowsim.scheduling.HMPCnewBest最新;
-import org.workflowsim.scheduling.HMPCtest;
-import org.workflowsim.scheduling.MCTSchedulingAlgorithm;
-import org.workflowsim.scheduling.MaxMinSchedulingAlgorithm;
-import org.workflowsim.scheduling.MinMinSchedulingAlgorithm;
-import org.workflowsim.scheduling.RoundRobinSchedulingAlgorithm;
-import org.workflowsim.scheduling.StaticSchedulingAlgorithm;
+import org.workflowsim.scheduling.*;
 import org.workflowsim.utils.Parameters;
 import org.workflowsim.utils.Parameters.SchedulingAlgorithm;
 
@@ -179,7 +169,7 @@ public class WorkflowScheduler extends DatacenterBroker {
                 algorithm = new HMPCtest();
                 break;
             case HMPCnew:
-                algorithm = new HMPCnewBest最新();
+                algorithm = new HMPCnew();
                 break;
             default:
                 algorithm = new StaticSchedulingAlgorithm();
