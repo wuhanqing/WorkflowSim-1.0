@@ -15,11 +15,9 @@
  */
 package org.workflowsim.planning;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import com.wuhanqing.examples.Simulation;
 import org.cloudbus.cloudsim.Consts;
 import org.cloudbus.cloudsim.File;
 import org.cloudbus.cloudsim.Log;
@@ -151,7 +149,25 @@ public class HEFTPlanningAlgorithm extends BasePlanningAlgorithm {
 
 			Map<CondorVM, Double> costsVm = new HashMap<CondorVM, Double>();
 
-			for (Object vmObject : getVmList()) {
+			List vList = new ArrayList<>();
+			if (task.getCloudletId() - 1 != Simulation.aaa.length) {
+				int[] aaa = Simulation.aaa[task.getCloudletId() - 1];
+				Map<Integer, CondorVM> map = new HashMap<>();
+				for (Object vm1 : getVmList()) {
+					CondorVM vm = (CondorVM) vm1;
+					map.put(vm.getId(), vm);
+				}
+				for (int j = 0; j < aaa.length; j++) {
+					if (aaa[j] == 0) {
+						map.remove(j);
+					}
+				}
+				vList = Arrays.asList(map.values().toArray());
+			} else {
+				vList = getVmList();
+			}
+
+			for (Object vmObject : vList) {
 				CondorVM vm = (CondorVM) vmObject;
 				if (vm.getNumberOfPes() < task.getNumberOfPes()) {
 					costsVm.put(vm, Double.MAX_VALUE);
@@ -235,19 +251,55 @@ public class HEFTPlanningAlgorithm extends BasePlanningAlgorithm {
 		}
 		// file Size is in Bytes, acc in MB
 		acc = acc / Consts.MILLION;
-		
+
+		List vParentList = new ArrayList<>();
+		if (parent.getCloudletId() - 1 != Simulation.aaa.length) {
+			int[] aaa = Simulation.aaa[parent.getCloudletId() - 1];
+			Map<Integer, CondorVM> map = new HashMap<>();
+			for (Object vm1 : getVmList()) {
+				CondorVM vm = (CondorVM) vm1;
+				map.put(vm.getId(), vm);
+			}
+			for (int j = 0; j < aaa.length; j++) {
+				if (aaa[j] == 0) {
+					map.remove(j);
+				}
+			}
+			vParentList = Arrays.asList(map.values().toArray());
+		} else {
+			vParentList = getVmList();
+		}
+
+		List vChildList = new ArrayList<>();
+		if (child.getCloudletId() - 1 != Simulation.aaa.length) {
+			int[] aaa = Simulation.aaa[child.getCloudletId() - 1];
+			Map<Integer, CondorVM> map = new HashMap<>();
+			for (Object vm1 : getVmList()) {
+				CondorVM vm = (CondorVM) vm1;
+				map.put(vm.getId(), vm);
+			}
+			for (int j = 0; j < aaa.length; j++) {
+				if (aaa[j] == 0) {
+					map.remove(j);
+				}
+			}
+			vChildList = Arrays.asList(map.values().toArray());
+		} else {
+			vChildList = getVmList();
+		}
+
 		Map<String, String> oMap = new HashMap<>();
-		for (int i = 0; i < getVmList().size(); i++) {
-			for (int j = 0; j < getVmList().size(); j++) {
-				CondorVM vm1 = (CondorVM) getVmList().get(i);
-				CondorVM vm2 = (CondorVM) getVmList().get(j);
+		for (int i = 0; i < vParentList.size(); i++) {
+			for (int j = 0; j < vChildList.size(); j++) {
+				CondorVM vm1 = (CondorVM) vParentList.get(i);
+				CondorVM vm2 = (CondorVM) vChildList.get(j);
 				if (vm1.getId() != vm2.getId()) {
 					double bandwidth = Math.min(vm1.getBw(), vm2.getBw());
 					time += acc * 8 / bandwidth;
 				}
 			}
 		}
-		return ( time ) / (getVmList().size() * getVmList().size());
+		return ( time ) / (vParentList.size() * vChildList.size());
 	}
 
 	// /**
@@ -359,7 +411,25 @@ public class HEFTPlanningAlgorithm extends BasePlanningAlgorithm {
 		double bestReadyTime = 0.0;
 		double finishTime;
 
-		for (Object vmObject : getVmList()) {
+		List vList = new ArrayList<>();
+		if (task.getCloudletId() - 1 != Simulation.aaa.length) {
+			int[] aaa = Simulation.aaa[task.getCloudletId() - 1];
+			Map<Integer, CondorVM> map = new HashMap<>();
+			for (Object vm1 : getVmList()) {
+				CondorVM vm = (CondorVM) vm1;
+				map.put(vm.getId(), vm);
+			}
+			for (int j = 0; j < aaa.length; j++) {
+				if (aaa[j] == 0) {
+					map.remove(j);
+				}
+			}
+			vList = Arrays.asList(map.values().toArray());
+		} else {
+			vList = getVmList();
+		}
+
+		for (Object vmObject : vList) {
 			CondorVM vm = (CondorVM) vmObject;
 			double minReadyTime = 0.0;
 
@@ -383,7 +453,7 @@ public class HEFTPlanningAlgorithm extends BasePlanningAlgorithm {
 
 		findFinishTime(task, chosenVM, bestReadyTime, true);
 		earliestFinishTimes.put(task, earliestFinishTime);
-		System.out.println("任务 " + (task.getCloudletId() - 1) + " 的完成时间 = "
+		System.out.println("任务 " + (task.getCloudletId()) + " 的完成时间 = "
 				+ earliestFinishTime);
 		task.setVmId(chosenVM.getId());
 	}

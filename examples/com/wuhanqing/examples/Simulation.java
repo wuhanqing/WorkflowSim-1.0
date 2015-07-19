@@ -18,7 +18,7 @@ public class Simulation {
 	public static FileOutputStream fos;
 
 	public static int[][] aaa;
-	
+
 	public static void main(String[] args) {
 		
 		for (int i = 0; i < 100; i++) {
@@ -84,7 +84,7 @@ public class Simulation {
     		} catch (IOException e) {
     			e.printStackTrace();
     		}
-			
+
 			Example.simulation(MAXMIN_method, INVALID_planning, daxPath, filePath, file);
 			Example.simulation(MINMIN_method, INVALID_planning, daxPath, filePath, file);
 			Example.simulation(INVALID_scheduling, HEFT_method, daxPath, filePath, file);

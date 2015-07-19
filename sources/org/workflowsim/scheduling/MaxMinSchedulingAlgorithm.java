@@ -15,8 +15,9 @@
  */
 package org.workflowsim.scheduling;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import com.wuhanqing.examples.Simulation;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Log;
 import org.workflowsim.CondorVM;
@@ -69,7 +70,6 @@ public class MaxMinSchedulingAlgorithm extends BaseSchedulingAlgorithm {
                 break;
             }
 
-
             for (int j = 0; j < size; j++) {
                 Cloudlet cloudlet = (Cloudlet) getCloudletList().get(j);
                 boolean chk = (Boolean) (hasChecked.get(j));
@@ -87,10 +87,28 @@ public class MaxMinSchedulingAlgorithm extends BaseSchedulingAlgorithm {
             }
             hasChecked.set(maxIndex, true);
 
-            int vmSize = getVmList().size();
+            List vList = new ArrayList<>();
+            if (maxCloudlet.getCloudletId() != Simulation.aaa.length) {
+                int[] aaa = Simulation.aaa[maxCloudlet.getCloudletId()];
+                Map<Integer, CondorVM> map = new HashMap<>();
+                for (Object vm1 : getVmList()) {
+                    CondorVM vm = (CondorVM) vm1;
+                    map.put(vm.getId(), vm);
+                }
+                for (int j = 0; j < aaa.length; j++) {
+                    if (aaa[j] == 0) {
+                        map.remove(j);
+                    }
+                }
+                vList = Arrays.asList(map.values().toArray());
+            } else {
+                vList = getVmList();
+            }
+
+            int vmSize = vList.size();
             CondorVM firstIdleVm = null;//(CondorVM)getVmList().get(0);
             for (int j = 0; j < vmSize; j++) {
-                CondorVM vm = (CondorVM) getVmList().get(j);
+                CondorVM vm = (CondorVM) vList.get(j);
                 if (vm.getState() == WorkflowSimTags.VM_STATUS_IDLE || vm.getState() == WorkflowSimTags.VM_STATUS_NAP) {
                     firstIdleVm = vm;
                     break;
@@ -100,7 +118,7 @@ public class MaxMinSchedulingAlgorithm extends BaseSchedulingAlgorithm {
                 break;
             }
             for (int j = 0; j < vmSize; j++) {
-                CondorVM vm = (CondorVM) getVmList().get(j);
+                CondorVM vm = (CondorVM) vList.get(j);
                 if ((vm.getState() == WorkflowSimTags.VM_STATUS_IDLE || vm.getState() == WorkflowSimTags.VM_STATUS_NAP)
                         && vm.getCurrentRequestedTotalMips() > firstIdleVm.getCurrentRequestedTotalMips()) {
                     firstIdleVm = vm;
