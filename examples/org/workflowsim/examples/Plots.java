@@ -1,7 +1,6 @@
 package org.workflowsim.examples;
 import javax.swing.JFrame;
 
-import org.math.plot.*;
 
 public class Plots {
 
@@ -23,13 +22,13 @@ public class Plots {
 		double[] y2 = {619487.18,683470.62,696162.28,2931770.77};
 		
 		// create your PlotPanel (you can use it as a JPanel)
-		Plot2DPanel plot = new Plot2DPanel();
-	  
-		plot.addLinePlot("my plot", x1, y1);
-		plot.addLinePlot("my plot", x2, y2);
-	 
-		JFrame frame = new JFrame("a plot panel");
-		  frame.setContentPane(plot);
-		  frame.setVisible(true);
+//		Plot2DPanel plot = new Plot2DPanel();
+//
+//		plot.addLinePlot("my plot", x1, y1);
+//		plot.addLinePlot("my plot", x2, y2);
+//
+//		JFrame frame = new JFrame("a plot panel");
+//		  frame.setContentPane(plot);
+//		  frame.setVisible(true);
 	}
 }

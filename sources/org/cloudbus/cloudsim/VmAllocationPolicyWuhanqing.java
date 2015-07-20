@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jdk.nashorn.internal.codegen.types.NumericType;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 

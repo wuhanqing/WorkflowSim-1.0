@@ -25,7 +25,7 @@ public class Simulation {
 			
 			
 			String file = "Montage_100_"+ (i+1) + ".xml";
-			String daxPath = "/Users/wuhanqing/Documents/workflowInstance/Montage100/" + file;
+			String daxPath = "D:/hanqingwu/git/WorkflowSim-1.0/config/dax/Montage_100.xml";
 
 			//随机设置任务可执行的虚拟机数组
 			ReplicaCatalog.FileSystem file_system = ReplicaCatalog.FileSystem.LOCAL;
@@ -46,7 +46,7 @@ public class Simulation {
 
 			Random random = new Random();
 			//randomSize: 可执行VM的数量
-			int randomSize = vmNum / 5;
+			int randomSize = 0;
 			Map<Integer, String> map = new HashMap<>();
 
 			for (int j = 0; j < list.size(); j++) {
@@ -65,7 +65,7 @@ public class Simulation {
 			///////////////////////////////////
 
 			String filePath;
-			filePath = "/Users/wuhanqing/Documents/Montage100new.txt";
+			filePath = "D:/hanqingwu/git/Montage100new.txt";
 			Parameters.SchedulingAlgorithm MAXMIN_method = Parameters.SchedulingAlgorithm.MAXMIN;
 			Parameters.SchedulingAlgorithm MINMIN_method = Parameters.SchedulingAlgorithm.MINMIN;
 			Parameters.SchedulingAlgorithm HMPC_method = Parameters.SchedulingAlgorithm.HMPCnew;

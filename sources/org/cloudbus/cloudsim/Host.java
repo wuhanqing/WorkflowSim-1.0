@@ -861,13 +861,13 @@ public class Host {
 		this.workLoad = workLoad;
 	}
 	
-	public double getCpuUitlization(List<CondorVM> vmList){
+	public double getCpuUitlization(List<? extends Vm> vmList){
 //		List<CondorVM> vmList = this.getVmList();
 		double vmUtilization = 0;
 		double vmMips = 0;
 		for(int i = 0; i < vmList.size(); i++)
 		{
-			CondorVM vm = vmList.get(i);
+			CondorVM vm = (CondorVM) vmList.get(i);
 			vmUtilization = vm.getCloudletScheduler().getTotalUtilizationOfCpu(CloudSim.clock());
 			if(vmUtilization > 0)
 			{
