@@ -97,8 +97,8 @@ public class Example {
              * the data center or the host doesn't have sufficient resources the
              * exact vmNum would be smaller than that. Take care.
              */
-            int vmNum = 110;//number of vms;
-            int hostNum = 20;
+            int vmNum = 55;//number of vms;
+            int hostNum = 10;
             /**
              * Should change this based on real physical path
              */

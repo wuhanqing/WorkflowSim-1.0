@@ -187,7 +187,7 @@ public class Helper {
 		int j = 0;
 		int k = 0;
 		while (j < 3) {
-			for (int i = 0; i < 20; i++) {
+			for (int i = 0; i < 10; i++) {
 				vms.add(new CondorVM(k, brokerId, Constants.VM_MIPS3[j],
 						Constants.VM_PES3[j], Constants.VM_RAM3[j],
 						Constants.VM_BW3, Constants.VM_SIZE3, "Xen",
@@ -199,7 +199,7 @@ public class Helper {
 		}
 		j = 0;
 		while (j < 3) {
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < 5; i++) {
 				vms.add(new CondorVM(k, brokerId, Constants.VM_MIPS3[j],
 						Constants.VM_PES3[j], Constants.VM_RAM3[j],
 						Constants.VM_BW3, Constants.VM_SIZE3, "Xen",
@@ -210,7 +210,7 @@ public class Helper {
 		}
 		j = 0;
 		while (j < 2) {
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < 5; i++) {
 				vms.add(new CondorVM(k, brokerId, Constants.VM_MIPS3[j],
 						Constants.VM_PES3[j], Constants.VM_RAM3[j],
 						Constants.VM_BW3, Constants.VM_SIZE3, "Xen",
