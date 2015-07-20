@@ -20,7 +20,7 @@ public class Simulation {
 			
 			
 			String file = "Montage_100_"+ (i+1) + ".xml";
-			String daxPath = "/Users/wuhanqing/Documents/workflowInstance/Montage100/" + file;
+			String daxPath = "D:/hanqingwu/git/WorkflowSim-1.0/config/dax/Montage_100.xml";
 			
 			ReplicaCatalog.FileSystem file_system = ReplicaCatalog.FileSystem.LOCAL;
 			ReplicaCatalog.init(file_system);
@@ -29,7 +29,7 @@ public class Simulation {
 			List<Task> list = parser.getTaskList();
 			
 			
-			String filePath = "/Users/wuhanqing/Documents/Montage100new.txt";
+			String filePath = "D:/hanqingwu/git/Montage100new.txt";
 			Parameters.SchedulingAlgorithm MAXMIN_method = Parameters.SchedulingAlgorithm.MAXMIN;
 			Parameters.SchedulingAlgorithm MINMIN_method = Parameters.SchedulingAlgorithm.MINMIN;
 			Parameters.SchedulingAlgorithm HMPC_method = Parameters.SchedulingAlgorithm.HMPCnew;
