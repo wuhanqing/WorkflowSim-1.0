@@ -79,13 +79,23 @@ public class HMPCnew extends BaseSchedulingAlgorithm
 	@Override
 	public void run() throws Exception
 	{
+
+		for (int j = 0; j < getVmList().size(); j++) {
+			CondorVM vm = (CondorVM) getVmList().get(j);
+			if (vm.getState() == WorkflowSimTags.VM_STATUS_IDLE) {
+				break;
+			}
+			if (j == getVmList().size() - 1) {
+				return;
+			}
+		}
+
 		System.out.println(CloudSim.clock());
 		Map<Task, Double> rank = HEFTPlanningAlgorithm.taskRank;
 		cloudlet2Rank = new HashMap<Job, Double>();
 		
 		List<Cloudlet> cloudletList = new ArrayList<Cloudlet>();
 		cloudletList = getCloudletList();
-		System.out.println(CloudSim.clock());
 		for (int i = 0; i < cloudletList.size(); i++) {
 			Cloudlet cloudlet = cloudletList.get(i);
 			if (cloudlet.getCheck() == -1) {
@@ -121,6 +131,17 @@ public class HMPCnew extends BaseSchedulingAlgorithm
 		
 		for(int i = 0; i < cloud2Rank.size(); i++)
 		{
+
+			for (int j = 0; j < getVmList().size(); j++) {
+				CondorVM vm = (CondorVM) getVmList().get(j);
+				if (vm.getState() == WorkflowSimTags.VM_STATUS_IDLE) {
+					break;
+				}
+				if (j == getVmList().size() - 1) {
+					return;
+				}
+			}
+
 			powerList.clear();
 			idlevmList.clear();
 			CondorVM firstIdleVm = null;

@@ -20,12 +20,13 @@ public class Simulation {
 	public static int[][] aaa;
 
 	public static void main(String[] args) {
-		
-		for (int i = 0; i < 100; i++) {
+
+		long t1 = System.currentTimeMillis();
+
+		for (int i = 0; i < 1000; i++) {
 			
-			
-			String file = "Montage_100_"+ (i+1) + ".xml";
-			String daxPath = "D:/hanqingwu/git/WorkflowSim-1.0/config/dax/Montage_100.xml";
+			String file = "Montage_300_"+ (i+1) + ".xml";
+			String daxPath = "D:/hanqingwu/git/Montage/" + file;
 
 			//随机设置任务可执行的虚拟机数组
 			ReplicaCatalog.FileSystem file_system = ReplicaCatalog.FileSystem.LOCAL;
@@ -46,7 +47,7 @@ public class Simulation {
 
 			Random random = new Random();
 			//randomSize: 可执行VM的数量
-			int randomSize = 0;
+			int randomSize = vmNum / 5;
 			Map<Integer, String> map = new HashMap<>();
 
 			for (int j = 0; j < list.size(); j++) {
@@ -65,7 +66,7 @@ public class Simulation {
 			///////////////////////////////////
 
 			String filePath;
-			filePath = "D:/hanqingwu/git/Montage100new.txt";
+			filePath = "D:/hanqingwu/git/Montage300.txt";
 			Parameters.SchedulingAlgorithm MAXMIN_method = Parameters.SchedulingAlgorithm.MAXMIN;
 			Parameters.SchedulingAlgorithm MINMIN_method = Parameters.SchedulingAlgorithm.MINMIN;
 			Parameters.SchedulingAlgorithm HMPC_method = Parameters.SchedulingAlgorithm.HMPCnew;
@@ -88,7 +89,7 @@ public class Simulation {
 			Example.simulation(MAXMIN_method, INVALID_planning, daxPath, filePath, file);
 			Example.simulation(MINMIN_method, INVALID_planning, daxPath, filePath, file);
 			Example.simulation(INVALID_scheduling, HEFT_method, daxPath, filePath, file);
-			Example.simulation(HMPC_method, HEFT_method, daxPath, filePath, file);
+			Example.simulation(HMPC_method, INVALID_planning, daxPath, filePath, file);
 			
 			try {
     			fos.write("\n".getBytes());
@@ -99,6 +100,9 @@ public class Simulation {
     			e.printStackTrace();
     		}
 		}
-				
+
+		long t2 = System.currentTimeMillis() - t1;
+		System.out.printf(Long.toString(t2));
+
 	}
 }
