@@ -33,7 +33,7 @@ import org.workflowsim.scheduling.DataAwareSchedulingAlgorithm;
 import org.workflowsim.scheduling.BaseSchedulingAlgorithm;
 import org.workflowsim.scheduling.FCFSSchedulingAlgorithm;
 import org.workflowsim.scheduling.HMPCSchedulingAlgorithm;
-import org.workflowsim.scheduling.HMPCnewBest最新;
+import org.workflowsim.scheduling.HMPCnew;
 import org.workflowsim.scheduling.HMPCtest;
 import org.workflowsim.scheduling.MCTSchedulingAlgorithm;
 import org.workflowsim.scheduling.MaxMinSchedulingAlgorithm;
@@ -179,7 +179,7 @@ public class WorkflowScheduler extends DatacenterBroker {
                 algorithm = new HMPCtest();
                 break;
             case HMPCnew:
-                algorithm = new HMPCnewBest最新();
+                algorithm = new HMPCnew();
                 break;
             default:
                 algorithm = new StaticSchedulingAlgorithm();
