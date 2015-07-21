@@ -136,7 +136,7 @@ public class HMPCnew extends BaseSchedulingAlgorithm
 		for(int i = 0; i < cloud2Rank.size(); i++)
 		{
 
-			for (int j = 0; i < getVmList().size(); j++) {
+			for (int j = 0; j < getVmList().size(); j++) {
 				CondorVM vm = (CondorVM) getVmList().get(j);
 				if (vm.getState() == WorkflowSimTags.VM_STATUS_IDLE) {
 					break;
