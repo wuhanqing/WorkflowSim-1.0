@@ -196,6 +196,7 @@ public class HMPCnew extends BaseSchedulingAlgorithm
 				WorkflowDatacenter datacenter = (WorkflowDatacenter) host.getDatacenter();
 				
 				double transTime = datacenter.processDataStageIn(job.getFileList(), job, vm);//
+//				double transTime = 0;
 				if (job.getCloudletId() == WorkflowPlanner.totalTaskNum) {
 					transTime = 0;//
 				}
