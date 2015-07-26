@@ -1,8 +1,6 @@
 package com.wuhanqing.examples;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,49 +22,30 @@ public class Simulation {
 		long t1 = System.currentTimeMillis();
 
 		for (int i = 0; i < 1000; i++) {
-			
-			String file = "Montage_300_"+ (i+1) + ".xml";
-			String daxPath = "D:/hanqingwu/git/Montage/" + file;
 
-			//随机设置任务可执行的虚拟机数组
-			ReplicaCatalog.FileSystem file_system = ReplicaCatalog.FileSystem.LOCAL;
-			ReplicaCatalog.init(file_system);
-			WorkflowParser parser = new WorkflowParser(7,"","",daxPath);
-			parser.parseXmlFile(daxPath);
-			List<Task> list = parser.getTaskList();
-			for (Task t : list) {
-				t.cloudletId = t.getCloudletId() - 1;
-			}
-			int vmNum = Example.vmNum;
-			aaa = new int[list.size()][vmNum];
-			for (int j = 0; j < list.size(); j++) {
-				for (int k = 0; k < vmNum; k++) {
-					aaa[j][k] = 1;
-				}
+			String dataPath = "CyberShake_100_"+ (i+1);
+			String path = "/Users/wuhanqing/workflow/Relation/" + dataPath;
+
+			try {
+				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path));
+				RelationData data = (RelationData) ois.readObject();
+				aaa = data.getData();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
 			}
 
-			Random random = new Random();
-			//randomSize: 可执行VM的数量
-			int randomSize = vmNum / 5;
-			Map<Integer, String> map = new HashMap<>();
-
-			for (int j = 0; j < list.size(); j++) {
-				for (int k = 0; k < randomSize; k++) {
-					Integer num = random.nextInt(vmNum);
-					while (map.containsKey(num)) {
-						num = random.nextInt(vmNum);
-					}
-					map.put(num, "");
-				}
-				for (int a : map.keySet()) {
-					aaa[j][a] = 0;
-				}
-				map.clear();
+			if (aaa == null) {
+				System.out.println("任务-虚拟机关系文件读取失败");
+				return;
 			}
-			///////////////////////////////////
 
-			String filePath;
-			filePath = "D:/hanqingwu/git/Montage300.txt";
+			String file = "CyberShake_100_"+ (i+1) + ".xml";
+			String daxPath = "/Users/wuhanqing/workflow/CyberShake100/" + file;
+
+
+			String filePath = "/Users/wuhanqing/workflow/Montage300.txt";
 			Parameters.SchedulingAlgorithm MAXMIN_method = Parameters.SchedulingAlgorithm.MAXMIN;
 			Parameters.SchedulingAlgorithm MINMIN_method = Parameters.SchedulingAlgorithm.MINMIN;
 			Parameters.SchedulingAlgorithm HMPC_method = Parameters.SchedulingAlgorithm.HMPCnew;
