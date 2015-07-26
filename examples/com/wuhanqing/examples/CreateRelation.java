@@ -20,10 +20,9 @@ public class CreateRelation {
 
     public static int cloutLetSize = 1000;
 
+    public static int lamda = 5;
+
     public static void main(String[] args) {
-
-
-
 
         for (int i = 0; i < 1000; i++) {
             String file = "CyberShake_100_"+ (i+1);
@@ -37,12 +36,13 @@ public class CreateRelation {
                 }
             }
 
-            Random random = new Random();
-            //randomSize: 可执行VM的数量
-            int randomSize = 0;
-            Map<Integer, String> map = new HashMap<>();
+            Random random = new Random();         //randomSize: 可执行VM的数量
 
             for (int j = 0; j < cloutLetSize; j++) {
+                //每一个任务都生成一个服从lamda的possion分布随机数
+                int randomSize = getPossionVariable(lamda);
+                Map<Integer, String> map = new HashMap<>();
+
                 for (int k = 0; k < randomSize; k++) {
                     Integer num = random.nextInt(vmNum);
                     while (map.containsKey(num)) {
@@ -53,7 +53,6 @@ public class CreateRelation {
                 for (int a : map.keySet()) {
                     aaa[j][a] = 0;
                 }
-                map.clear();
             }
 
             RelationData data = new RelationData();
@@ -72,6 +71,24 @@ public class CreateRelation {
 
         }
 
+    }
+
+    private static int getPossionVariable(double lamda) {
+        int x = 0;
+        double y = Math.random(), cdf = getPossionProbability(x, lamda);
+        while (cdf < y) {
+            x++;
+            cdf += getPossionProbability(x, lamda);
+        }
+        return x;
+    }
+
+    private static double getPossionProbability(int k, double lamda) {
+        double c = Math.exp(-lamda), sum = 1;
+        for (int i = 1; i <= k; i++) {
+            sum *= lamda / i;
+        }
+        return sum * c;
     }
 
 }
